@@ -14,3 +14,5 @@ The interpreter does not implement Playwright actions, network policy, evidence 
 selection, proposal approval, or isolation. `FLAKY` is part of the project result vocabulary but can
 only be produced by a future explicit diagnostic rerun layer; `runContract()` never emits it.
 Driver messages and observed values remain bounded untrusted data; future renderers must escape them.
+The sibling Playwright package now supplies the tested real-browser driver; this interpreter remains
+browser-agnostic and owns result classification.

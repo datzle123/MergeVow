@@ -3,6 +3,7 @@ import { type ContractStep, validateContract } from "@mergevow/contract";
 import { dispatchStep } from "./dispatch.js";
 import {
   DEFAULT_INTERPRETER_POLICY,
+  DRIVER_RESULT_LIMITS,
   type DriverObservedValue,
   type DriverStepIssue,
   EXECUTION_VERDICTS,
@@ -14,9 +15,6 @@ import {
   type InterpreterRunResult,
   type RunContractOptions,
 } from "./types.js";
-
-const MAX_DRIVER_CODE_LENGTH = 128;
-const MAX_DRIVER_MESSAGE_LENGTH = 4_096;
 
 type RaceOutcome =
   | { readonly kind: "cancelled" }
@@ -142,9 +140,9 @@ function boundedErrorMessage(error: unknown): string {
   try {
     const candidate = error instanceof Error ? error.message : undefined;
     const message = typeof candidate === "string" ? candidate : "Driver threw a non-Error value.";
-    return message.length <= MAX_DRIVER_MESSAGE_LENGTH
+    return message.length <= DRIVER_RESULT_LIMITS.maxMessageLength
       ? message
-      : `${message.slice(0, MAX_DRIVER_MESSAGE_LENGTH - 3)}...`;
+      : `${message.slice(0, DRIVER_RESULT_LIMITS.maxMessageLength - 3)}...`;
   } catch {
     return "Driver threw an error whose message could not be read.";
   }
@@ -155,7 +153,7 @@ function isObservedValue(value: unknown): value is DriverObservedValue {
     value === null ||
     typeof value === "boolean" ||
     (typeof value === "number" && Number.isFinite(value)) ||
-    (typeof value === "string" && value.length <= MAX_DRIVER_MESSAGE_LENGTH)
+    (typeof value === "string" && value.length <= DRIVER_RESULT_LIMITS.maxObservedStringLength)
   );
 }
 
@@ -209,10 +207,10 @@ function normalizeDriverIssue(value: unknown): DriverStepIssue | undefined {
     if (
       typeof code !== "string" ||
       code.length === 0 ||
-      code.length > MAX_DRIVER_CODE_LENGTH ||
+      code.length > DRIVER_RESULT_LIMITS.maxCodeLength ||
       typeof message !== "string" ||
       message.length === 0 ||
-      message.length > MAX_DRIVER_MESSAGE_LENGTH
+      message.length > DRIVER_RESULT_LIMITS.maxMessageLength
     ) {
       return undefined;
     }

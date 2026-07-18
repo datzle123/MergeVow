@@ -97,7 +97,7 @@ function isLoopbackHostname(hostname: string): boolean {
   );
 }
 
-function normalizeAllowedOrigin(value: string): string {
+export function normalizeLoopbackOrigin(value: string): string {
   if (typeof value !== "string" || value.length === 0 || value.length > MAX_ORIGIN_LENGTH) {
     throw new TypeError("The allowed origin must be a bounded URL string.");
   }
@@ -340,14 +340,16 @@ async function startDenyProxy(
 }
 
 function isInternalFrameUrl(value: string): boolean {
-  return value === "about:blank" || value === "about:srcdoc";
+  return (
+    value === "about:blank" || value === "about:srcdoc" || value === "chrome-error://chromewebdata/"
+  );
 }
 
 export async function createGuardedBrowserContext(
   browser: Browser,
   allowedOriginValue: string,
 ): Promise<GuardedBrowserContext> {
-  const allowedOrigin = normalizeAllowedOrigin(allowedOriginValue);
+  const allowedOrigin = normalizeLoopbackOrigin(allowedOriginValue);
   let violation: NetworkGuardViolation | undefined;
   let failure: NetworkTransportFailure | undefined;
   let closing = false;

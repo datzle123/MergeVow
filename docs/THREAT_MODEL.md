@@ -1,7 +1,7 @@
 # Threat Model And Public Guarantees
 
 Status: Locked for V0 by `SW-001`<br>
-Last reviewed: 2026-07-18
+Last reviewed: 2026-07-19
 
 This document is the canonical source for MergeVow security and integrity claims. Product copy,
 ADRs, issues, and implementation must not promise more than the guarantees below.
@@ -49,7 +49,7 @@ runner escapes are outside every stated guarantee.
 
 | Level | Availability | Oracle source | Narrow guarantee | Explicit exclusions |
 |---|---|---|---|---|
-| **Local Cooperative** | V0 target | Current local contract/config and installed runner | Replays selected checkpoints and reports observed drift | No ownership, approval, tamper resistance, CI enforcement, or protection from workspace writers |
+| **Local Cooperative** | Workspace vertical slice; unreleased | Current local contract/config and workspace runner | Replays selected checkpoints and reports observed drift | No ownership, approval, tamper resistance, CI enforcement, or protection from workspace writers |
 | **PR Drift Gate** | V0 target after `SW-015` | Accepted bundle from one exact base SHA; runner/action and policy from a recorded immutable release digest | **If the configured check executes as specified and the trusted infrastructure remains intact**, head contract/config edits cannot alter the oracle for that invocation; proposals are reported separately | No explicit human attestation, workflow/check-bypass defense, hostile-code isolation, admin defense, or anti-automation defense |
 | **Protected Attestation** | Post-V0 after `SW-023` | Externally enforced oracle plus an attested proposed bundle and isolated ephemeral execution | Candidate code cannot alter the oracle, approval, or check implementation; any bound-input change invalidates approval | No protection from authorized malicious organization admins, compromised trusted dependencies/platforms, browser zero-days, or runner escapes |
 
@@ -59,9 +59,9 @@ inside the configured check.” Local mode is never described as tamper-proof.
 
 ## Availability
 
-- The repository contains tested contract, interpreter, locator, and browser-guard primitives; no
-  trust level is shipped end to end yet.
-- Local Cooperative and PR Drift Gate are V0 targets.
+- The repository contains a tested end-to-end Local Cooperative workspace demo. It has no published
+  package, recorder, or CLI yet.
+- PR Drift Gate remains a V0 target and is not implemented.
 - Protected Attestation is post-V0 and must not be advertised as available before external
   enforcement, isolated execution, and bound-approval acceptance tests pass.
 
@@ -105,6 +105,8 @@ blocking and never become the active oracle automatically.
 - Network response bodies are excluded from evidence by default. Use synthetic test data and assume
   arbitrary page, URL, console, and screenshot content may still contain secrets.
 - Retry may classify `FLAKY`; it never converts failure into `PASS`.
+- Local replay uses a fresh guarded context, checks retained policy and transport failure before and
+  after every browser operation, and never exports or reuses browser storage state.
 
 ### PR Drift Gate
 

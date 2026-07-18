@@ -1,4 +1,15 @@
 export {
+  createPlaywrightDriver,
+  DRIVER_STEP_CODES,
+  type DriverStepCode,
+  type PageTopologyFailure,
+  PLAYWRIGHT_DRIVER_INFRA_CODES,
+  type PlaywrightDriverInfrastructureDetail,
+  PlaywrightDriverInfrastructureError,
+  type PlaywrightDriverOptions,
+  type PlaywrightInterpreterDriver,
+} from "./driver.js";
+export {
   inspectLocatorMatches,
   LOCATOR_RESOLUTION_CODES,
   type LocatorMatchObservation,
@@ -18,4 +29,13 @@ export {
   type NetworkGuardCode,
   type NetworkGuardViolation,
   type NetworkTransportFailure,
+  normalizeLoopbackOrigin,
 } from "./network.js";
+export {
+  LOOPBACK_READINESS_CODES,
+  LOOPBACK_READINESS_LIMITS,
+  type LoopbackReadinessCode,
+  LoopbackReadinessError,
+  type LoopbackReadinessOptions,
+  waitForLoopbackReady,
+} from "./readiness.js";

@@ -1,6 +1,7 @@
 export { runContract } from "./interpreter.js";
 export {
   DEFAULT_INTERPRETER_POLICY,
+  DRIVER_RESULT_LIMITS,
   type DriverObservedValue,
   type DriverStepIssue,
   type DriverStepResult,

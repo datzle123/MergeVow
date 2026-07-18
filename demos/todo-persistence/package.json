@@ -1,0 +1,22 @@
+{
+  "name": "@mergevow/demo-todo-persistence",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Local Cooperative persistence vertical slice for MergeVow.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "demo": "tsx src/run.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@mergevow/contract": "workspace:*",
+    "@mergevow/interpreter": "workspace:*",
+    "@mergevow/playwright-driver": "workspace:*",
+    "playwright": "1.61.1"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  }
+}

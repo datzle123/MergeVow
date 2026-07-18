@@ -19,8 +19,9 @@ isolation or proof of human approval. See [docs/THREAT_MODEL.md](docs/THREAT_MOD
 
 ## Project Status
 
-**The contract kernel, semantic locator resolver, deterministic interpreter, and loopback
-same-origin browser guard are complete. Browser action replay has not shipped.**
+**A handwritten contract now replays end to end in guarded Chromium: a semantic refactor passes and
+a broken persistence flow fails after reload. This workspace vertical slice is not published; the
+recorder, CLI, evidence, and PR Drift Gate have not shipped.**
 
 The repository contains the product charter, threat model, execution plan, validation kit, demo
 specifications, development toolchain, Codex skill, and three tested product packages:
@@ -39,8 +40,13 @@ The contract kernel already provides:
 - RFC 8785 canonical JSON plus stable `sha256:<hex>` contract identities.
 - Exact Playwright role/name, label, and test-ID matching with structured missing/ambiguous results.
 - Fixed source-order opcode dispatch with typed regression, timeout, cancellation, and driver errors.
+- All 14 real Playwright driver operations with deterministic assertion values, rendered-text
+  normalization, cooperative cancellation, and guard checks around every operation.
+- Bounded loopback app readiness that accepts any HTTP response without following redirects.
 - Cookie-isolated loopback contexts that inspect redirects, bypass caller launch proxies, separate
   transport failures, and reject cross-origin requests plus unsupported realtime/worker APIs.
+- One seven-step todo contract that passes baseline and semantic-refactor variants, then reports
+  `LOCATOR_MISSING` at step 6 when persistence is removed.
 - Golden and boundary tests on Linux, Windows, and macOS through repository CI.
 
 Workspace API today (the package is not published to npm yet):
@@ -65,7 +71,13 @@ if (!identity.ok) throw new Error(identity.issues[0]?.message);
 console.log(identity.value.hash);
 ```
 
-Browser replay, recording, evidence, and the PR Drift Gate remain on the public
+Run the unreleased workspace proof with:
+
+```bash
+pnpm --filter @mergevow/demo-todo-persistence demo
+```
+
+Recording, evidence, the CLI, and the PR Drift Gate remain on the public
 [issue roadmap](docs/BACKLOG.md); they are not advertised as shipped.
 
 ## For Contributors
@@ -74,7 +86,8 @@ Browser replay, recording, evidence, and the PR Drift Gate remain on the public
 2. Check [READY_TO_START.md](READY_TO_START.md).
 3. Read [AGENTS.md](AGENTS.md) before using a coding agent.
 4. Review [docs/BACKLOG.md](docs/BACKLOG.md).
-5. Continue with `SW-007` and prove the Week 2 vertical slice before the recorder.
+5. Continue with `SW-008`; the handwritten Week 2 vertical slice must remain green as recorder work
+   begins.
 
 ## Setup
 

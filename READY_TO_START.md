@@ -1,8 +1,8 @@
 # Ready To Start
 
 MergeVow is in implementation. The contract kernel, strict semantic locator resolver,
-deterministic interpreter state machine, and loopback same-origin browser guard are built and tested;
-real action replay has not been built yet.
+deterministic interpreter, guarded real-browser driver, readiness probe, and handwritten persistence
+vertical slice are built and tested. Recorder and CLI acquisition are not built yet.
 
 ## Locked Decisions
 
@@ -33,14 +33,17 @@ real action replay has not been built yet.
 - `pnpm audit --audit-level low`: no known vulnerabilities
 - `@mergevow/contract`: 43 Vitest cases covering schema, hostile inputs, canonicalization, and hash
 - Contract package typecheck, clean build, package dry-run, and built-ESM parser smoke
-- `@mergevow/playwright-driver`: 29 real-Chromium cases covering semantic locators plus loopback
+- `@mergevow/playwright-driver`: 48 real-Chromium and readiness cases covering all 14 driver methods,
+  semantic locators, cancellation, assertion mismatch, loopback readiness, and the loopback
   origin validation, proxy and cookie isolation, requests, redirects, transport failures,
   unsupported realtime/worker APIs, and Service Worker blocking
 - Playwright-driver typecheck, clean build, and package dry-run
 - `@mergevow/interpreter`: 14 cases covering all opcode dispatch, exact regression output, driver
   failure/protocol, cancellation, per-step/total timeout, and invalid boundary inputs
 - Interpreter typecheck, clean build, package dry-run, and built-ESM state-machine smoke
-- Published and built JSON Schema SHA-256 equality
+- `@mergevow/demo-todo-persistence`: 3 vertical-slice/report cases plus a runnable
+  `PASS / PASS / REGRESSION` demo using fresh contexts
+- Source and built JSON Schema SHA-256 equality
 - Chromium launch and semantic heading lookup
 - All project-relative Markdown links
 - Skill validator for source and installed copies
@@ -64,5 +67,5 @@ These require the owner's accounts or identity and were intentionally not guesse
 
 ## Next Action
 
-`SW-001` through `SW-006B` are complete. Open `docs/BACKLOG.md` and start `SW-007`. Do not implement the
-recorder first.
+`SW-001` through `SW-007` are complete. Open `docs/BACKLOG.md` and start `SW-008` while keeping the
+handwritten vertical slice as the recorder's acceptance oracle.

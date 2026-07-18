@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@mergevow/contract": "workspace:*",
+    "@mergevow/interpreter": "workspace:*",
     "playwright": "1.61.1"
   },
   "engines": {

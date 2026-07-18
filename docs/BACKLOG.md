@@ -147,20 +147,37 @@ health files, and corrected roadmap dependencies are active and API-verified.
 the three existing CI contexts and CodeQL thresholds, while contribution and security routes live in
 version control. Required human approval remains gated on a second maintainer.
 
-## Ready Issues
-
 ### SW-007: Persistence Vertical Slice
+
+**Status:** Complete on 2026-07-19. See
+[GitHub issue #13](https://github.com/datzle123/MergeVow/issues/13).
 
 **Objective:** Prove the core value before recorder work.
 
 **Acceptance criteria:** a handwritten contract runs in Chromium, a semantic refactor passes, a
 persistence bug fails after reload, and a minimal report explains the failure.
 
+**Outcome:** `@mergevow/playwright-driver` implements all 14 operations, bounded no-redirect
+readiness, cancellation cooperation, deterministic semantic mismatches, and before/after guard
+checks. One seven-step todo contract passes baseline and semantic-refactor variants in fresh
+contexts; broken persistence returns `REGRESSION` with `LOCATOR_MISSING` at step 6. The escaped Local
+Cooperative terminal summary contains no time-dependent fields. ADR-0010 records the boundary.
+
+## Ready Issues
+
+### SW-008: Recorder Action Capture
+
+**Objective:** Capture the approved action subset from one headed Chromium page without creating an
+executable contract surface.
+
+**Acceptance criteria:** a user can capture visit, click, fill, select, and check actions as Contract
+V1 data; unsupported, sensitive, ambiguous, external, and multi-page activity fails closed or is
+explicitly excluded.
+
 ## Planned Issues
 
 | ID | Deliverable | Depends on |
 |---|---|---|
-| SW-008 | Recorder action capture | SW-004, SW-007 |
 | SW-009 | Checkpoint/assertion overlay | SW-008 |
 | SW-010 | Sensitive-input redaction | SW-008 |
 | SW-011 | Screenshot, console, and trace evidence | SW-005, SW-007 |

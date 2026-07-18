@@ -33,6 +33,21 @@ importers:
         specifier: 4.1.10
         version: 4.1.10(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(tsx@4.23.1))
 
+  demos/todo-persistence:
+    dependencies:
+      '@mergevow/contract':
+        specifier: workspace:*
+        version: link:../../packages/contract
+      '@mergevow/interpreter':
+        specifier: workspace:*
+        version: link:../../packages/interpreter
+      '@mergevow/playwright-driver':
+        specifier: workspace:*
+        version: link:../../packages/playwright-driver
+      playwright:
+        specifier: 1.61.1
+        version: 1.61.1
+
   packages/contract:
     dependencies:
       ajv:
@@ -56,6 +71,9 @@ importers:
       '@mergevow/contract':
         specifier: workspace:*
         version: link:../contract
+      '@mergevow/interpreter':
+        specifier: workspace:*
+        version: link:../interpreter
       playwright:
         specifier: 1.61.1
         version: 1.61.1

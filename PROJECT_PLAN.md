@@ -434,7 +434,7 @@ GitHub App or required workflow alone is not a sandbox.
 | SW-006 | Same-origin navigation and network guard **(complete)** | SW-005 |
 | SW-006A | Publishable MergeVow identity **(complete)** | SW-006 |
 | SW-006B | Repository governance and security baseline **(complete)** | SW-006A |
-| SW-007 | Chromium driver, app readiness, and handwritten persistence vertical slice | SW-005, SW-006 |
+| SW-007 | Chromium driver, app readiness, and handwritten persistence vertical slice **(complete)** | SW-005, SW-006 |
 | SW-008 | Recorder action capture | SW-004, SW-007 |
 | SW-009 | Overlay for checkpoint/assertion selection | SW-008 |
 | SW-010 | Password, cookie, token, sensitive-input redaction | SW-008 |

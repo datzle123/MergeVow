@@ -43,6 +43,12 @@ export interface RunContractOptions {
   readonly signal?: AbortSignal;
 }
 
+export const DRIVER_RESULT_LIMITS = Object.freeze({
+  maxCodeLength: 128,
+  maxMessageLength: 4_096,
+  maxObservedStringLength: 4_096,
+});
+
 export type DriverObservedValue = boolean | number | string | null;
 
 export interface DriverStepIssue {

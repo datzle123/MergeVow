@@ -95,6 +95,20 @@ violations and transport failures are retained separately. This is not complete 
 candidate-process, dependency-install, DNS, or operating-system egress control. See
 [ADR-0007](adr/0007-loopback-same-origin-browser-guard.md).
 
+Before connecting a browser, readiness sends a direct `HEAD /` request to that exact normalized
+loopback origin. Any HTTP status proves only that the listener is ready; redirects are not followed,
+and contract steps remain responsible for semantic behavior. Connection failures retry within
+trusted timeout and cancellation bounds.
+
+The Playwright driver checks retained policy and transport state before and after every operation.
+Those states and Playwright exceptions are infrastructure errors. Only locator or assertion
+mismatch data returned by the driver is a semantic regression.
+
+Replay accepts exactly one controlled page. Opening a popup or otherwise creating another page is
+an infrastructure error, retained even if that page immediately closes. Assertion values are
+compared in full before result data is bounded: issue codes are limited to 128 characters, messages
+to 4,096 characters, and observed strings to 4,096 characters.
+
 ## Assertions
 
 | Opcode | Payload | Expected condition |
@@ -108,9 +122,11 @@ candidate-process, dependency-install, DNS, or operating-system egress control. 
 | `assertChecked` | `{ "locator": Locator, "equals": boolean }` | Checked state equals the supplied boolean |
 | `assertDisabled` | `{ "locator": Locator, "equals": boolean }` | Disabled state equals the supplied boolean |
 
-Text and value assertions are literal, never regular-expression matches. Text equality uses the
-deterministic whitespace normalization defined with the interpreter in `SW-005`; value equality uses
-the exact raw control value. `assertCount.equals` is a non-negative safe integer.
+Text and value assertions are literal, never regular-expression matches. `assertText` reads rendered
+`innerText`; both observed and expected strings collapse each ECMAScript whitespace run to one ASCII
+space and trim leading/trailing whitespace before a case-sensitive comparison. No Unicode
+normalization occurs. Value equality uses the exact raw control value. `assertCount.equals` is a
+non-negative safe integer.
 
 ## Resource Limits
 

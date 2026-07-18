@@ -545,7 +545,7 @@ describe("loopback same-origin browser guard", () => {
       });
       expect(Object.isFrozen(guarded.getTransportFailure())).toBe(true);
       expect(guarded.getViolation()).toBeUndefined();
-      await new Promise((resolve) => setTimeout(resolve, 25));
+      await new Promise((resolve) => setTimeout(resolve, 100));
       expect(unhandled).toEqual([]);
     } finally {
       process.off("unhandledRejection", onUnhandled);
