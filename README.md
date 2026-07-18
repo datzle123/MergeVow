@@ -19,12 +19,12 @@ isolation or proof of human approval. See [docs/THREAT_MODEL.md](docs/THREAT_MOD
 
 ## Project Status
 
-**Contract Schema V1, canonical identity, and semantic locator resolution are complete. The replay
-interpreter has not started.**
+**The contract kernel, semantic locator resolver, and deterministic interpreter state machine are
+complete. Browser action replay and network enforcement have not shipped.**
 
 The repository contains the product charter, threat model, execution plan, validation kit, demo
-specifications, development toolchain, Codex skill, and two tested product packages:
-`@stillworks/contract` and `@stillworks/playwright-driver`.
+specifications, development toolchain, Codex skill, and three tested product packages:
+`@stillworks/contract`, `@stillworks/playwright-driver`, and `@stillworks/interpreter`.
 
 ## Working Today
 
@@ -35,7 +35,8 @@ The contract kernel already provides:
 - Rejection of duplicate keys, dangerous prototype keys, external URL operands, and unknown fields.
 - RFC 8785 canonical JSON plus stable `sha256:<hex>` contract identities.
 - Exact Playwright role/name, label, and test-ID matching with structured missing/ambiguous results.
-- Golden tests on Linux, Windows, and macOS through repository CI.
+- Fixed source-order opcode dispatch with typed regression, timeout, cancellation, and driver errors.
+- Golden and boundary tests on Linux, Windows, and macOS through repository CI.
 
 Workspace API today (the package is not published to npm yet):
 
@@ -59,7 +60,7 @@ if (!identity.ok) throw new Error(identity.issues[0]?.message);
 console.log(identity.value.hash);
 ```
 
-Replay, recording, evidence, and the PR Drift Gate remain on the public
+Browser replay, recording, evidence, and the PR Drift Gate remain on the public
 [issue roadmap](docs/BACKLOG.md); they are not advertised as shipped.
 
 ## For Contributors
@@ -68,7 +69,7 @@ Replay, recording, evidence, and the PR Drift Gate remain on the public
 2. Check [READY_TO_START.md](READY_TO_START.md).
 3. Read [AGENTS.md](AGENTS.md) before using a coding agent.
 4. Review [docs/BACKLOG.md](docs/BACKLOG.md).
-5. Continue with `SW-005`, then implement the Week 2 vertical slice before the recorder.
+5. Continue with `SW-006`, then implement the Week 2 vertical slice before the recorder.
 
 ## Setup
 

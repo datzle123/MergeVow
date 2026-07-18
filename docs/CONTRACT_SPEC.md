@@ -147,3 +147,14 @@ Unknown operation names and unknown nested fields fail validation.
 
 Timeout and cancellation budgets belong to trusted interpreter configuration, not candidate-editable
 contract data. Evidence explains a verdict but never becomes an assertion oracle.
+
+## Interpreter Policy
+
+The fixed interpreter dispatches validated steps in source order and stops at the first semantic or
+infrastructure failure. Trusted defaults are 10 seconds per step and 120 seconds total; code-owned
+bounds allow 1-60,000 ms per step and 1-600,000 ms total. Contract data cannot alter these values.
+
+`runContract()` emits `PASS`, `REGRESSION`, or `INFRA_ERROR` with a zero-based failing step index and
+the exact frozen step. It performs no retry and cannot emit `FLAKY`. Diagnostic reruns and flaky
+classification require a separate future layer. See
+[ADR-0006](adr/0006-deterministic-interpreter-boundary.md).

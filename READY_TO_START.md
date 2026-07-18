@@ -1,7 +1,8 @@
 # Ready To Start
 
-StillWorks is in implementation. The contract kernel and strict semantic locator resolver are built
-and tested; the deterministic interpreter has not been built yet.
+StillWorks is in implementation. The contract kernel, strict semantic locator resolver, and
+deterministic interpreter state machine are built and tested; same-origin browser enforcement and
+real action replay have not been built yet.
 
 ## Locked Decisions
 
@@ -35,6 +36,9 @@ and tested; the deterministic interpreter has not been built yet.
 - `@stillworks/playwright-driver`: 10 real-Chromium cases covering semantic refactors, exact matching,
   missing/ambiguous evidence, count observation, and browser-error propagation
 - Playwright-driver typecheck, clean build, and package dry-run
+- `@stillworks/interpreter`: 14 cases covering all opcode dispatch, exact regression output, driver
+  failure/protocol, cancellation, per-step/total timeout, and invalid boundary inputs
+- Interpreter typecheck, clean build, package dry-run, and built-ESM state-machine smoke
 - Published and built JSON Schema SHA-256 equality
 - Chromium launch and semantic heading lookup
 - All project-relative Markdown links
@@ -58,5 +62,5 @@ These require the owner's accounts or identity and were intentionally not guesse
 
 ## Next Action
 
-`SW-001` through `SW-004` are complete. Open `docs/BACKLOG.md` and start `SW-005`. Do not implement the
+`SW-001` through `SW-005` are complete. Open `docs/BACKLOG.md` and start `SW-006`. Do not implement the
 recorder first.

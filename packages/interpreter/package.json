@@ -1,0 +1,33 @@
+{
+  "name": "@stillworks/interpreter",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Deterministic Contract V1 state machine for StillWorks.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "pnpm clean && tsc -b tsconfig.build.json",
+    "clean": "node -e \"const { rmSync } = require('node:fs'); rmSync('dist', { recursive: true, force: true }); rmSync('.tsbuildinfo', { force: true })\"",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@stillworks/contract": "workspace:*"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  }
+}

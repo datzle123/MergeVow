@@ -45,6 +45,12 @@ importers:
         specifier: 3.3.1
         version: 3.3.1
 
+  packages/interpreter:
+    dependencies:
+      '@stillworks/contract':
+        specifier: workspace:*
+        version: link:../contract
+
   packages/playwright-driver:
     dependencies:
       '@stillworks/contract':

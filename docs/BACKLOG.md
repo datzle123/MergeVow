@@ -82,14 +82,23 @@ future interpreter to classify. Ten real-Chromium tests cover semantic refactors
 malformed input, missing, ambiguity, count, browser failure, and strict live-locator behavior without
 CSS/XPath/regex fallback or self-healing.
 
-## Ready Issues
-
 ### SW-005: Interpreter State Machine
+
+**Status:** Complete on 2026-07-19. See [GitHub issue #4](https://github.com/datzle123/StillWorks/issues/4).
 
 **Objective:** Replay a handwritten contract deterministically.
 
 **Acceptance criteria:** cancellation, per-step timeout, total timeout, typed result states, and exact
 failing-step output are covered.
+
+**Outcome:** `@stillworks/interpreter` validates and freezes Contract V1, dispatches all 14 opcodes
+through explicit driver methods in source order, and stops on the first failure. Fourteen controlled
+tests cover `PASS`, exact-step `REGRESSION`, driver/protocol `INFRA_ERROR`, external cancellation,
+per-step and total timeout, trusted policy bounds, malformed contracts, and prototype-polluted
+opcodes. Results contain no timestamp or duration. The interpreter performs no retry and never emits
+`FLAKY`; ADR-0006 records the boundary.
+
+## Ready Issues
 
 ### SW-006: Same-Origin Guard
 
