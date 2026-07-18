@@ -102,10 +102,21 @@ opcodes. Results contain no timestamp or duration. The interpreter performs no r
 
 ### SW-006: Same-Origin Guard
 
+**Status:** Complete on 2026-07-19. See [GitHub issue #6](https://github.com/datzle123/StillWorks/issues/6).
+
 **Objective:** Prevent contracts from becoming an unrestricted browser/network executor.
 
 **Acceptance criteria:** allowlisted localhost works; external navigation and requests fail closed;
 redirect behavior is tested.
+
+**Outcome:** `@stillworks/playwright-driver` creates a Service-Worker-free context for one exact
+HTTP(S) loopback origin. A fresh direct request client per routed request preserves cookie
+credentials semantics and avoids inherited launch proxies; every redirect `Location` is checked.
+An owned loopback deny proxy and unsupported-API policy reject non-routed proxy traffic, WebSockets,
+EventSource, WebTransport, WebRTC, and dedicated/shared workers. Policy violations and transport
+failures are frozen, bounded, and separate, while owned closure prevents route errors from escaping.
+Nineteen real-Chromium guard tests use only controlled loopback servers. ADR-0007 records why this is
+request/API policy rather than a complete browser or network sandbox.
 
 ### SW-007: Persistence Vertical Slice
 

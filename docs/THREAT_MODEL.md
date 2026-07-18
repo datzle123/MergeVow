@@ -59,7 +59,8 @@ inside the configured check.” Local mode is never described as tamper-proof.
 
 ## Availability
 
-- The repository currently contains preparation material only; no trust level is shipped yet.
+- The repository contains tested contract, interpreter, locator, and browser-guard primitives; no
+  trust level is shipped end to end yet.
 - Local Cooperative and PR Drift Gate are V0 targets.
 - Protected Attestation is post-V0 and must not be advertised as available before external
   enforcement, isolated execution, and bound-approval acceptance tests pass.
@@ -115,8 +116,12 @@ blocking and never become the active oracle automatically.
 - Separate base artifacts and candidate source for provenance, while making no isolation claim about
   those workspaces.
 - Resolve the accepted bundle from the exact base SHA and runner semantics from an immutable digest.
-- Restrict browser traffic, including redirects, to explicitly configured loopback/same-origin
-  endpoints. This does not restrict candidate-process or dependency-install egress.
+- Use a fresh Service-Worker-free browser context. Route document, subresource, and fetch HTTP(S)
+  traffic through a proxy-free, cookie-isolated transport that checks every redirect target against
+  one exact loopback origin. Override launch proxies with an owned loopback deny proxy and reject
+  WebSocket, EventSource, WebTransport, WebRTC, and dedicated/shared worker APIs as unsupported.
+  This request/API policy is not a complete browser-egress boundary and does not restrict
+  browser-internal or future channels, candidate-process, dependency-install, DNS, or OS egress.
 - Report all missing, modified, or proposed head artifacts without using them as the active oracle.
 
 ### Protected Attestation
@@ -135,7 +140,7 @@ blocking and never become the active oracle automatically.
 | Candidate weakens, deletes, renames, or adds a governed head artifact | Keep the accepted base oracle and emit `CHANGE_REQUIRES_APPROVAL`, independent of replay verdict |
 | Candidate edits or bypasses the repository workflow | Not solved by PR Drift Gate; requires Protected Attestation outside candidate control |
 | Candidate attacks the same-user runner or forges a result | Outside PR Drift Gate; Protected Attestation requires isolated execution and external verification |
-| Candidate app or dependency exfiltrates data | V0 supplies no credentials and limits browser traffic, but does not control all process egress or claim a sandbox |
+| Candidate app or dependency exfiltrates data | V0 supplies no credentials, restricts routed browser requests, and rejects listed realtime/worker APIs, but does not claim complete browser/process egress control or a sandbox |
 | Contract adds executable behavior | Reject through the closed data-only schema and fixed interpreter |
 | Evidence contains secrets or script markup | Treat as sensitive, redact configured patterns, omit bodies by default, and escape before rendering; perfect detection is not guaranteed |
 | Intentional behavior change | Preserve the base replay verdict and separately emit `CHANGE_REQUIRES_APPROVAL`; never activate head automatically |
@@ -149,7 +154,8 @@ blocking and never become the active oracle automatically.
 - Pixel screenshots as the pass/fail oracle.
 - Production traffic or session recording.
 - MFA, passkeys, third-party SSO, or committed cookies/raw `storageState`.
-- WebSocket, SSE, service worker, multi-tab, cross-origin iframe, or real-time collaborative flows.
+- WebSocket, SSE/EventSource, service worker, dedicated/shared web worker, WebTransport, WebRTC,
+  multi-tab, cross-origin iframe, or real-time collaborative flows.
 - Arbitrary JavaScript, shell, imports, callbacks, XPath, arbitrary CSS selectors, or executable
   regex in contracts.
 - AI self-healing or automatic contract approval.

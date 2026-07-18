@@ -10,3 +10,12 @@ export {
   type ResolvedLocator,
   resolveUniqueLocator,
 } from "./locator.js";
+export {
+  createGuardedBrowserContext,
+  type GuardedBrowserContext,
+  NETWORK_GUARD_CODES,
+  NETWORK_TRANSPORT_FAILURE_CODE,
+  type NetworkGuardCode,
+  type NetworkGuardViolation,
+  type NetworkTransportFailure,
+} from "./network.js";

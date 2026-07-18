@@ -1,8 +1,8 @@
 # Ready To Start
 
-StillWorks is in implementation. The contract kernel, strict semantic locator resolver, and
-deterministic interpreter state machine are built and tested; same-origin browser enforcement and
-real action replay have not been built yet.
+StillWorks is in implementation. The contract kernel, strict semantic locator resolver,
+deterministic interpreter state machine, and loopback same-origin browser guard are built and tested;
+real action replay has not been built yet.
 
 ## Locked Decisions
 
@@ -33,8 +33,9 @@ real action replay have not been built yet.
 - `pnpm audit --audit-level low`: no known vulnerabilities
 - `@stillworks/contract`: 43 Vitest cases covering schema, hostile inputs, canonicalization, and hash
 - Contract package typecheck, clean build, package dry-run, and built-ESM parser smoke
-- `@stillworks/playwright-driver`: 10 real-Chromium cases covering semantic refactors, exact matching,
-  missing/ambiguous evidence, count observation, and browser-error propagation
+- `@stillworks/playwright-driver`: 29 real-Chromium cases covering semantic locators plus loopback
+  origin validation, proxy and cookie isolation, requests, redirects, transport failures,
+  unsupported realtime/worker APIs, and Service Worker blocking
 - Playwright-driver typecheck, clean build, and package dry-run
 - `@stillworks/interpreter`: 14 cases covering all opcode dispatch, exact regression output, driver
   failure/protocol, cancellation, per-step/total timeout, and invalid boundary inputs
@@ -62,5 +63,5 @@ These require the owner's accounts or identity and were intentionally not guesse
 
 ## Next Action
 
-`SW-001` through `SW-005` are complete. Open `docs/BACKLOG.md` and start `SW-006`. Do not implement the
+`SW-001` through `SW-006` are complete. Open `docs/BACKLOG.md` and start `SW-007`. Do not implement the
 recorder first.

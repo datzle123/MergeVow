@@ -55,7 +55,8 @@ Weekly repositories running StillWorks on at least three PRs within 14 days.
 - Pixel screenshots as the pass/fail oracle.
 - Production traffic or session recording.
 - MFA, passkeys, third-party SSO, or committed cookies/raw `storageState`.
-- WebSocket, SSE, service worker, multi-tab, cross-origin iframe, or real-time collaborative flows.
+- WebSocket, SSE/EventSource, service worker, dedicated/shared web worker, WebTransport, WebRTC,
+  multi-tab, cross-origin iframe, or real-time collaborative flows.
 - Arbitrary JavaScript, shell, imports, callbacks, XPath, arbitrary CSS selectors, or executable
   regex in contracts.
 - AI self-healing or automatic contract approval.

@@ -87,6 +87,13 @@ protocol-relative URLs, backslashes, ASCII control characters, and DEL are inval
 subresource enforcement is a runtime responsibility of the same-origin guard in `SW-006`; schema
 validation alone is not a network sandbox.
 
+The runtime guard accepts one trusted HTTP(S) loopback origin and compares exact scheme, host, and
+port. It uses a cookie-isolated direct request transport, checks every redirect target, overrides
+launch proxies with an owned loopback deny proxy, and rejects listed worker/realtime APIs. Policy
+violations and transport failures are retained separately. This is not complete browser,
+candidate-process, dependency-install, DNS, or operating-system egress control. See
+[ADR-0007](adr/0007-loopback-same-origin-browser-guard.md).
+
 ## Assertions
 
 | Opcode | Payload | Expected condition |

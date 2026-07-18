@@ -19,8 +19,8 @@ isolation or proof of human approval. See [docs/THREAT_MODEL.md](docs/THREAT_MOD
 
 ## Project Status
 
-**The contract kernel, semantic locator resolver, and deterministic interpreter state machine are
-complete. Browser action replay and network enforcement have not shipped.**
+**The contract kernel, semantic locator resolver, deterministic interpreter, and loopback
+same-origin browser guard are complete. Browser action replay has not shipped.**
 
 The repository contains the product charter, threat model, execution plan, validation kit, demo
 specifications, development toolchain, Codex skill, and three tested product packages:
@@ -36,6 +36,8 @@ The contract kernel already provides:
 - RFC 8785 canonical JSON plus stable `sha256:<hex>` contract identities.
 - Exact Playwright role/name, label, and test-ID matching with structured missing/ambiguous results.
 - Fixed source-order opcode dispatch with typed regression, timeout, cancellation, and driver errors.
+- Cookie-isolated loopback contexts that inspect redirects, bypass caller launch proxies, separate
+  transport failures, and reject cross-origin requests plus unsupported realtime/worker APIs.
 - Golden and boundary tests on Linux, Windows, and macOS through repository CI.
 
 Workspace API today (the package is not published to npm yet):
@@ -69,7 +71,7 @@ Browser replay, recording, evidence, and the PR Drift Gate remain on the public
 2. Check [READY_TO_START.md](READY_TO_START.md).
 3. Read [AGENTS.md](AGENTS.md) before using a coding agent.
 4. Review [docs/BACKLOG.md](docs/BACKLOG.md).
-5. Continue with `SW-006`, then implement the Week 2 vertical slice before the recorder.
+5. Continue with `SW-007` and prove the Week 2 vertical slice before the recorder.
 
 ## Setup
 
@@ -96,7 +98,8 @@ semantic locators. Screenshots and traces are sensitive evidence, not the oracle
 - Pixel screenshots as the pass/fail oracle.
 - Production traffic or session recording.
 - MFA, passkeys, third-party SSO, or committed cookies/raw `storageState`.
-- WebSocket, SSE, service worker, multi-tab, cross-origin iframe, or real-time collaborative flows.
+- WebSocket, SSE/EventSource, service worker, dedicated/shared web worker, WebTransport, WebRTC,
+  multi-tab, cross-origin iframe, or real-time collaborative flows.
 - Arbitrary JavaScript, shell, imports, callbacks, XPath, arbitrary CSS selectors, or executable
   regex in contracts.
 - AI self-healing or automatic contract approval.

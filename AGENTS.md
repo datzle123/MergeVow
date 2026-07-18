@@ -11,7 +11,7 @@ Before changing code or architecture:
 
 ## Current State
 
-The repository is prepared and `SW-001` through `SW-005` are complete. `SW-006` is the next issue.
+The repository is prepared and `SW-001` through `SW-006` are complete. `SW-007` is the next issue.
 Do not create broad framework code ahead of the active issue. The first
 vertical slice must precede recorder polish, GitHub App work, dashboards, HTTP-service or
 command-process contract targets, or MCP integration. This does not exclude StillWorks' own CLI.

@@ -106,7 +106,8 @@ in [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md).
 - Pixel screenshots as the pass/fail oracle.
 - Production traffic or session recording.
 - MFA, passkeys, third-party SSO, or committed cookies/raw `storageState`.
-- WebSocket, SSE, service worker, multi-tab, cross-origin iframe, or real-time collaborative flows.
+- WebSocket, SSE/EventSource, service worker, dedicated/shared web worker, WebTransport, WebRTC,
+  multi-tab, cross-origin iframe, or real-time collaborative flows.
 - Arbitrary JavaScript, shell, imports, callbacks, XPath, arbitrary CSS selectors, or executable
   regex in contracts.
 - AI self-healing or automatic contract approval.
@@ -406,8 +407,10 @@ CI controls:
   treating those directories as isolation.
 - Resolve contract/config/schema from one exact base SHA and runner/action semantics from one recorded
   immutable release digest. Record both with the verdict and never fall back to head.
-- Restrict browser traffic, including redirects, to explicitly configured loopback/same-origin
-  destinations. V0 does not claim process-wide egress control.
+- Restrict routed document, subresource, and fetch traffic, including redirects, to one exact
+  loopback origin through a cookie-isolated direct transport. Override launch proxies with an owned
+  loopback deny proxy and reject unsupported realtime/worker APIs. V0 does not claim complete
+  browser- or process-wide egress control.
 - A privileged approval workflow must never checkout or execute PR code.
 - Escape all report content to prevent stored XSS.
 - Apply size, depth, timeout, navigation, and evidence-retention limits.
@@ -428,7 +431,7 @@ GitHub App or required workflow alone is not a sandbox.
 | SW-003 | Canonical serialization and stable contract hash **(complete)** | SW-002 |
 | SW-004 | Semantic locator resolver **(complete)** | SW-002 |
 | SW-005 | Interpreter state machine, timeout, cancellation **(complete)** | SW-004 |
-| SW-006 | Same-origin navigation and network guard | SW-005 |
+| SW-006 | Same-origin navigation and network guard **(complete)** | SW-005 |
 | SW-007 | Chromium driver, app readiness, and handwritten persistence vertical slice | SW-005, SW-006 |
 | SW-008 | Recorder action capture | SW-004 |
 | SW-009 | Overlay for checkpoint/assertion selection | SW-008 |
