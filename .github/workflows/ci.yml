@@ -40,8 +40,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Chromium
+      - name: Install Chromium And Linux Dependencies
+        if: runner.os == 'Linux'
         run: pnpm browser:install
+
+      - name: Install Chromium
+        if: runner.os != 'Linux'
+        run: pnpm exec playwright install --only-shell chromium
 
       - name: Check preparation and code
         run: pnpm check
