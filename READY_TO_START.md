@@ -51,6 +51,8 @@ real action replay has not been built yet.
 
 - Public repository: [datzle123/MergeVow](https://github.com/datzle123/MergeVow).
 - Repository CI, Issues, Discussions, security reporting, and project topics are enabled.
+- Squash-only merging, default-branch rules, CodeQL, Dependabot alerts, secret scanning, and push
+  protection are enabled; ADR-0009 records the ordinary-governance boundary.
 
 ## External Setup Still Required
 
@@ -58,10 +60,9 @@ These require the owner's accounts or identity and were intentionally not guesse
 
 - Reserve the npm package/scope.
 - Choose a domain and perform trademark checks.
-- Replace the temporary security-reporting process with a private contact.
 - Recruit and schedule the first five interview/pilot candidates.
 
 ## Next Action
 
-`SW-001` through `SW-006` are complete. Open `docs/BACKLOG.md` and start `SW-007`. Do not implement the
+`SW-001` through `SW-006B` are complete. Open `docs/BACKLOG.md` and start `SW-007`. Do not implement the
 recorder first.

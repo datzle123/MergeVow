@@ -131,6 +131,22 @@ packages use `@mergevow/*`, the future CLI is `mergevow`, and local run state li
 `.mergevow/`. ADR-0008 records the availability snapshot, decision, and unreserved namespace/domain
 limitation. The checkout moved into the configured Codex workspace instead of using drive F.
 
+### SW-006B: Establish Repository Governance And Security Baseline
+
+**Status:** Complete on 2026-07-19. See
+[GitHub issue #10](https://github.com/datzle123/MergeVow/issues/10).
+
+**Objective:** Protect the public repository without deadlocking its solo maintainer or overstating
+ordinary GitHub controls as a MergeVow trust level.
+
+**Acceptance criteria:** squash-only merging, a no-bypass default-branch ruleset, strict three-platform
+CI, SHA-pinned GitHub-owned Actions, private reporting, security scanning, dependency alerts, community
+health files, and corrected roadmap dependencies are active and API-verified.
+
+**Outcome:** ADR-0009 records the solo-safe policy and its limitations. Repository settings enforce
+the three existing CI contexts and CodeQL thresholds, while contribution and security routes live in
+version control. Required human approval remains gated on a second maintainer.
+
 ## Ready Issues
 
 ### SW-007: Persistence Vertical Slice
@@ -147,16 +163,16 @@ persistence bug fails after reload, and a minimal report explains the failure.
 | SW-008 | Recorder action capture | SW-004, SW-007 |
 | SW-009 | Checkpoint/assertion overlay | SW-008 |
 | SW-010 | Sensitive-input redaction | SW-008 |
-| SW-011 | Screenshot, console, and trace evidence | SW-005 |
+| SW-011 | Screenshot, console, and trace evidence | SW-005, SW-007 |
 | SW-012 | Semantic contract diff | SW-003 |
-| SW-013 | CLI `init`, `record`, `check`, `diff` | SW-009, SW-011 |
-| SW-014 | Exact base-SHA contract/config/schema loader | SW-003 |
+| SW-013 | CLI `init`, `record`, `check`, `diff` | SW-009, SW-010, SW-011, SW-012 |
+| SW-014 | Exact base-SHA contract/config/schema loader | SW-003, SW-013 |
 | SW-015 | Read-only PR GitHub Action | SW-014 |
 | SW-016 | Independent proposal status for all governed head-bundle changes | SW-012, SW-015 |
 | SW-017 | Malicious-contract fuzz suite | SW-002, SW-006 |
-| SW-018 | Three demo apps and mutation corpus | SW-013, SW-015 |
+| SW-018 | Three demo apps and mutation corpus | SW-013, SW-015, SW-016 |
 | SW-019 | Cross-platform and 100-run soak | SW-018 |
 | SW-020 | npm provenance and release automation | SW-017, SW-019 |
-| SW-021 | Public quickstart and enforcement docs | V0 complete |
-| SW-022 | Fully bound maintainer approval record | Post-V0 demand gate |
-| SW-023 | External enforcement and isolated ephemeral execution | Protected-enforcement gate |
+| SW-021 | Public quickstart and enforcement docs | SW-016, SW-019, SW-020 |
+| SW-022 | Fully bound maintainer approval record | SW-021, post-V0 demand gate |
+| SW-023 | External enforcement and isolated ephemeral execution | SW-022, protected-enforcement gate |

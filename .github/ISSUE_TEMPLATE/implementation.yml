@@ -28,8 +28,9 @@ body:
   - type: dropdown
     id: trust
     attributes:
-      label: Trust level
+      label: Trust or governance boundary
       options:
+        - Ordinary repository governance
         - Local cooperative
         - PR drift gate
         - Protected attestation

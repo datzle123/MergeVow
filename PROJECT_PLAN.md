@@ -432,23 +432,25 @@ GitHub App or required workflow alone is not a sandbox.
 | SW-004 | Semantic locator resolver **(complete)** | SW-002 |
 | SW-005 | Interpreter state machine, timeout, cancellation **(complete)** | SW-004 |
 | SW-006 | Same-origin navigation and network guard **(complete)** | SW-005 |
+| SW-006A | Publishable MergeVow identity **(complete)** | SW-006 |
+| SW-006B | Repository governance and security baseline **(complete)** | SW-006A |
 | SW-007 | Chromium driver, app readiness, and handwritten persistence vertical slice | SW-005, SW-006 |
-| SW-008 | Recorder action capture | SW-004 |
+| SW-008 | Recorder action capture | SW-004, SW-007 |
 | SW-009 | Overlay for checkpoint/assertion selection | SW-008 |
 | SW-010 | Password, cookie, token, sensitive-input redaction | SW-008 |
-| SW-011 | Trace, screenshot, console, network-failure evidence | SW-005 |
+| SW-011 | Trace, screenshot, console, network-failure evidence | SW-005, SW-007 |
 | SW-012 | Human-readable semantic contract diff | SW-003 |
-| SW-013 | CLI `init`, `record`, `check`, `diff` | SW-009, SW-011 |
-| SW-014 | Exact base-SHA contract/config/schema loader | SW-003 |
+| SW-013 | CLI `init`, `record`, `check`, `diff` | SW-009, SW-010, SW-011, SW-012 |
+| SW-014 | Exact base-SHA contract/config/schema loader | SW-003, SW-013 |
 | SW-015 | Read-only `pull_request` GitHub Action | SW-014 |
 | SW-016 | Independent proposal status for every governed head-bundle change | SW-012, SW-015 |
 | SW-017 | Malicious-contract property/fuzz suite | SW-002, SW-006 |
-| SW-018 | Three demo apps and mutation corpus | SW-013, SW-015 |
+| SW-018 | Three demo apps and mutation corpus | SW-013, SW-015, SW-016 |
 | SW-019 | Cross-platform and 100-run flake soak | SW-018 |
 | SW-020 | npm provenance, release automation, pinned Action SHA | SW-017, SW-019 |
-| SW-021 | Quickstart, contract spec, threat model, CI guide | all V0 work |
-| SW-022 | Fully bound maintainer approval record | post-V0 |
-| SW-023 | External enforcement and isolated ephemeral execution | demand gate |
+| SW-021 | Quickstart, contract spec, threat model, CI guide | SW-016, SW-019, SW-020 |
+| SW-022 | Fully bound maintainer approval record | SW-021, post-V0 demand gate |
+| SW-023 | External enforcement and isolated ephemeral execution | SW-022, protected-enforcement gate |
 
 ## 12. Test Strategy
 

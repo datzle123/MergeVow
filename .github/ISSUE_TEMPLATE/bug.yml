@@ -4,6 +4,10 @@ title: "[Bug] "
 labels:
   - bug
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not disclose vulnerabilities or exploit details here. Use [private security reporting](https://github.com/datzle123/MergeVow/security/advisories/new).
   - type: textarea
     id: reproduction
     attributes:

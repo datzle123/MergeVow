@@ -2,13 +2,17 @@
 
 <!-- One behavioral objective. Include the SW-* issue. -->
 
+## Related Issue
+
+Closes #
+
 ## Acceptance Criteria
 
 - [ ]
 
 ## Trust Boundary
 
-<!-- Local cooperative, PR drift gate, or protected attestation. -->
+<!-- Ordinary repository governance, Local Cooperative, PR Drift Gate, or Protected Attestation. -->
 
 ## Verification
 
