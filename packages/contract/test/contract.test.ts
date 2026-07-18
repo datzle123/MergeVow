@@ -110,6 +110,44 @@ describe("contract schema v1", () => {
 
     expect(result.ok).toBe(false);
     expect(value).toEqual(before);
+
+    const valid = {
+      flow: "detached",
+      steps: [{ visit: "/before" }],
+      version: 1,
+    };
+    const validResult = validateContract(valid);
+    expect(validResult.ok).toBe(true);
+    if (!validResult.ok) {
+      throw new Error("Expected a valid programmatic contract.");
+    }
+
+    valid.flow = "mutated";
+    valid.steps[0] = { visit: "/after" };
+    expect(validResult.value).not.toBe(valid);
+    expect(validResult.value).toEqual({
+      flow: "detached",
+      steps: [{ visit: "/before" }],
+      version: 1,
+    });
+  });
+
+  it("rejects non-enumerable properties that cannot exist in JSON source", () => {
+    const value = {
+      flow: "hidden-property",
+      steps: [{ visit: "/" }],
+      version: 1,
+    };
+    Object.defineProperty(value, "hidden", { value: true });
+
+    const result = validateContract(value);
+
+    expect(result).toEqual(
+      expect.objectContaining({
+        issues: [expect.objectContaining({ code: CONTRACT_ISSUE_CODES.invalidJsonValue })],
+        ok: false,
+      }),
+    );
   });
 
   it("rejects more than the configured step count", () => {

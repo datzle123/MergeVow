@@ -2,9 +2,13 @@
 
 **Show it once. Keep it working.**
 
-StillWorks is an open-source project for human-owned behavior contracts in CI. A developer
-demonstrates a critical browser flow, selects the semantic outcomes that matter, and checks
-candidate code with a selected local contract or a base-selected PR oracle.
+[![Repository CI](https://github.com/datzle123/StillWorks/actions/workflows/ci.yml/badge.svg)](https://github.com/datzle123/StillWorks/actions/workflows/ci.yml)
+[![MIT License](https://img.shields.io/badge/license-MIT-2ea44f.svg)](LICENSE)
+[![TypeScript strict](https://img.shields.io/badge/TypeScript-strict-3178c6.svg)](tsconfig.base.json)
+
+StillWorks is being built as an open-source tool for human-owned behavior contracts in CI. The V0
+goal is simple: demonstrate a critical browser flow, select the semantic outcomes that matter, and
+check candidate code with a selected local contract or a base-selected PR oracle.
 
 > Your agent can edit the code, not silently redefine done.
 
@@ -15,19 +19,54 @@ isolation or proof of human approval. See [docs/THREAT_MODEL.md](docs/THREAT_MOD
 
 ## Project Status
 
-**Preparation and Contract Schema V1 are complete. Browser replay has not started.**
+**Contract Schema V1 and canonical contract identity are complete. Browser replay has not started.**
 
 The repository contains the product charter, threat model, execution plan, validation kit, demo
 specifications, development toolchain, Codex skill, and the first tested product package:
 `@stillworks/contract`.
 
-## Start Here
+## Working Today
+
+The contract kernel already provides:
+
+- A closed JSON Schema 2020-12 wire format with semantic locators and no executable fields.
+- Fail-closed UTF-8/JSON parsing with byte, depth, node, string, and step limits.
+- Rejection of duplicate keys, dangerous prototype keys, external URL operands, and unknown fields.
+- RFC 8785 canonical JSON plus stable `sha256:<hex>` contract identities.
+- Golden tests on Linux, Windows, and macOS through repository CI.
+
+Workspace API today (the package is not published to npm yet):
+
+```ts
+import { hashContract, parseContract } from "@stillworks/contract";
+
+const parsed = parseContract(`{
+  "version": 1,
+  "flow": "checkout",
+  "steps": [
+    { "visit": "/checkout" },
+    { "assertVisible": { "role": "heading", "name": "Checkout" } }
+  ]
+}`);
+
+if (!parsed.ok) throw new Error(parsed.issues[0]?.message);
+
+const identity = hashContract(parsed.value);
+if (!identity.ok) throw new Error(identity.issues[0]?.message);
+
+console.log(identity.value.hash);
+```
+
+Replay, recording, evidence, and the PR Drift Gate remain on the public
+[issue roadmap](docs/BACKLOG.md); they are not advertised as shipped.
+
+## For Contributors
 
 1. Read [PROJECT_PLAN.md](PROJECT_PLAN.md).
 2. Check [READY_TO_START.md](READY_TO_START.md).
 3. Read [AGENTS.md](AGENTS.md) before using a coding agent.
 4. Review [docs/BACKLOG.md](docs/BACKLOG.md).
-5. Continue with `SW-003`, then implement the Week 2 vertical slice before the recorder.
+5. Continue with `SW-004`, then implement the Week 2 vertical slice before the recorder.
 
 ## Setup
 
@@ -44,7 +83,8 @@ Node.js 24+ and pnpm 11 are the prepared baseline.
 V0 uses TypeScript, pinned Chromium, deterministic loginless web flows, data-only contracts, and
 semantic locators. Screenshots and traces are sensitive evidence, not the oracle.
 
-V0 explicitly does not include:
+<details>
+<summary>What V0 explicitly does not include</summary>
 
 - Replacing unit, integration, accessibility, security, or full E2E suites.
 - Formal verification, autonomous QA, or proof of full-stack/backend correctness.
@@ -65,6 +105,8 @@ V0 explicitly does not include:
   content and evidence are secret-free.
 - Protection from malicious maintainers/admins, compromised trusted dependencies/platforms, browser
   zero-days, or runner escapes.
+
+</details>
 
 See [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md) for the guarantees StillWorks does and does not
 make.

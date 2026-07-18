@@ -1,7 +1,7 @@
 # Ready To Start
 
-StillWorks is in implementation. Contract Schema V1 is built and tested; browser replay behavior has
-not been built yet.
+StillWorks is in implementation. Contract Schema V1 and canonical SHA-256 identity are built and
+tested; browser replay behavior has not been built yet.
 
 ## Locked Decisions
 
@@ -29,7 +29,7 @@ not been built yet.
 - `pnpm install`
 - `pnpm check`
 - `pnpm audit --audit-level low`: no known vulnerabilities
-- `@stillworks/contract`: 30 Vitest cases covering valid, invalid, and malicious inputs
+- `@stillworks/contract`: 43 Vitest cases covering schema, hostile inputs, canonicalization, and hash
 - Contract package typecheck, clean build, package dry-run, and built-ESM parser smoke
 - Published and built JSON Schema SHA-256 equality
 - Chromium launch and semantic heading lookup
@@ -38,11 +38,15 @@ not been built yet.
 - Independent skill forward-test against `SW-002`; it enforced dependencies, scope, and security
   boundaries and found a contract-example inconsistency that was corrected
 
+## Published
+
+- Public repository: [datzle123/StillWorks](https://github.com/datzle123/StillWorks).
+- Repository CI, Issues, Discussions, security reporting, and project topics are enabled.
+
 ## External Setup Still Required
 
 These require the owner's accounts or identity and were intentionally not guessed:
 
-- Create the public GitHub organization/repository.
 - Reserve the npm package/scope.
 - Choose a domain and perform trademark checks.
 - Replace the temporary security-reporting process with a private contact.
@@ -50,5 +54,5 @@ These require the owner's accounts or identity and were intentionally not guesse
 
 ## Next Action
 
-`SW-001` and `SW-002` are complete. Open `docs/BACKLOG.md` and start `SW-003`. Do not implement the
+`SW-001` through `SW-003` are complete. Open `docs/BACKLOG.md` and start `SW-004`. Do not implement the
 recorder first.

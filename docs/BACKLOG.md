@@ -8,7 +8,8 @@
 - [x] Public guarantee matrix and non-goals (`SW-001`).
 - [x] Validation and launch kit.
 - [x] Codex project skill.
-- [ ] Reserve GitHub org/repo and npm scope.
+- [x] Create the public GitHub repository.
+- [ ] Reserve the npm package/scope.
 - [ ] Recruit five pilot candidates.
 
 ## Completed Issues
@@ -49,14 +50,22 @@ TypeScript types, bounded fail-closed parsing, and 30 tests across valid, invali
 inputs. Duplicate decoded keys, dangerous prototype keys, invalid Unicode/UTF-8, executable fields,
 external URL operands, and all named resource limits are rejected without mutating input.
 
-## Ready Issues
-
 ### SW-003: Canonical Serialization And Hash
 
-**Objective:** Give accepted and proposed governed bundles a stable content identity.
+**Status:** Complete on 2026-07-19.
+
+**Objective:** Give validated contracts a stable cross-platform content identity.
 
 **Acceptance criteria:** identical semantic JSON produces the same hash across supported platforms;
 invalid JSON values fail closed.
+
+**Outcome:** validated contracts use RFC 8785 canonical JSON and SHA-256 identities formatted as
+`sha256:<lowercase hex>`. Twelve golden, mutation, and negative tests prove property-order/whitespace
+stability, behavior-change sensitivity, JSON escaping and negative-zero handling, explicit Unicode
+behavior, inert snapshotting, and fail-closed invalid input. Repository CI runs the suite on Linux,
+Windows, and macOS.
+
+## Ready Issues
 
 ### SW-004: Semantic Locator Resolver
 

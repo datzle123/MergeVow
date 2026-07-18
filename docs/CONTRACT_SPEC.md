@@ -119,6 +119,21 @@ validation. A violation fails closed and returns no partial contract. These limi
 [`limits.ts`](../packages/contract/src/limits.ts); the numeric values in the JSON Schema must remain
 identical.
 
+## Canonical Identity
+
+After validation, StillWorks serializes the contract with RFC 8785 JSON Canonicalization Scheme and
+hashes the UTF-8 canonical JSON with SHA-256. The public identity format is
+`sha256:<64 lowercase hexadecimal characters>`.
+
+Whitespace and object-property order do not affect identity. Array order and values do. Unicode is
+not normalized: code-point-distinct strings remain distinct. Invalid input returns structured
+validation issues and never produces a partial canonical document or hash.
+Programmatic validation returns a detached inert snapshot rather than a caller-owned live object.
+Canonicalization uses that snapshot, and the contract returned with an identity is the deeply frozen
+parsed form of the exact hashed bytes.
+[ADR-0005](adr/0005-rfc8785-contract-identity.md) records the durable decision and its trust-boundary
+limits.
+
 ## Deliberately Absent
 
 V1 has no timeout, retry, sleep, wait, callback, import, shell, JavaScript, regex, XPath, CSS,
