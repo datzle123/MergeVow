@@ -65,14 +65,24 @@ stability, behavior-change sensitivity, JSON escaping and negative-zero handling
 behavior, inert snapshotting, and fail-closed invalid input. Repository CI runs the suite on Linux,
 Windows, and macOS.
 
-## Ready Issues
-
 ### SW-004: Semantic Locator Resolver
+
+**Status:** Complete on 2026-07-19. See [GitHub issue #2](https://github.com/datzle123/StillWorks/issues/2).
 
 **Objective:** Resolve role/name, label, and test ID without silently healing ambiguity.
 
 **Acceptance criteria:** stable DOM refactors pass; ambiguous and missing locators fail with clear
 evidence.
+
+**Outcome:** `@stillworks/playwright-driver` maps only the three approved Contract V1 locator
+strategies to exact Playwright queries. Unique resolution returns a live locator only for one match;
+zero and multiple matches return structured `LOCATOR_MISSING` or `LOCATOR_AMBIGUOUS` evidence.
+Count observation remains separate for `assertCount`, while Playwright errors propagate for the
+future interpreter to classify. Ten real-Chromium tests cover semantic refactors, exactness,
+malformed input, missing, ambiguity, count, browser failure, and strict live-locator behavior without
+CSS/XPath/regex fallback or self-healing.
+
+## Ready Issues
 
 ### SW-005: Interpreter State Machine
 

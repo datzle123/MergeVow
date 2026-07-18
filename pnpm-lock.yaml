@@ -45,6 +45,15 @@ importers:
         specifier: 3.3.1
         version: 3.3.1
 
+  packages/playwright-driver:
+    dependencies:
+      '@stillworks/contract':
+        specifier: workspace:*
+        version: link:../contract
+      playwright:
+        specifier: 1.61.1
+        version: 1.61.1
+
 packages:
 
   '@biomejs/biome@2.5.4':

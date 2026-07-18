@@ -1,7 +1,7 @@
 # Ready To Start
 
-StillWorks is in implementation. Contract Schema V1 and canonical SHA-256 identity are built and
-tested; browser replay behavior has not been built yet.
+StillWorks is in implementation. The contract kernel and strict semantic locator resolver are built
+and tested; the deterministic interpreter has not been built yet.
 
 ## Locked Decisions
 
@@ -27,10 +27,14 @@ tested; browser replay behavior has not been built yet.
 ## Verified Locally
 
 - `pnpm install`
+- `pnpm browser:install`
 - `pnpm check`
 - `pnpm audit --audit-level low`: no known vulnerabilities
 - `@stillworks/contract`: 43 Vitest cases covering schema, hostile inputs, canonicalization, and hash
 - Contract package typecheck, clean build, package dry-run, and built-ESM parser smoke
+- `@stillworks/playwright-driver`: 10 real-Chromium cases covering semantic refactors, exact matching,
+  missing/ambiguous evidence, count observation, and browser-error propagation
+- Playwright-driver typecheck, clean build, and package dry-run
 - Published and built JSON Schema SHA-256 equality
 - Chromium launch and semantic heading lookup
 - All project-relative Markdown links
@@ -54,5 +58,5 @@ These require the owner's accounts or identity and were intentionally not guesse
 
 ## Next Action
 
-`SW-001` through `SW-003` are complete. Open `docs/BACKLOG.md` and start `SW-004`. Do not implement the
+`SW-001` through `SW-004` are complete. Open `docs/BACKLOG.md` and start `SW-005`. Do not implement the
 recorder first.

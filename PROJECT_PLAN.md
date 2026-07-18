@@ -426,7 +426,7 @@ GitHub App or required workflow alone is not a sandbox.
 | SW-001 | Threat model, guarantees, explicit non-goals **(complete)** | - |
 | SW-002 | JSON Schema v1 with `additionalProperties: false` **(complete)** | SW-001 |
 | SW-003 | Canonical serialization and stable contract hash **(complete)** | SW-002 |
-| SW-004 | Semantic locator resolver | SW-002 |
+| SW-004 | Semantic locator resolver **(complete)** | SW-002 |
 | SW-005 | Interpreter state machine, timeout, cancellation | SW-004 |
 | SW-006 | Same-origin navigation and network guard | SW-005 |
 | SW-007 | Chromium driver, app readiness, and handwritten persistence vertical slice | SW-005, SW-006 |

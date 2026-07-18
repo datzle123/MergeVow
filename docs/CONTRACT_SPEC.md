@@ -60,8 +60,13 @@ matches. `assertHidden` means one attached element is hidden; absence is express
 `assertCount` expectation of zero. Missing and ambiguous locator behavior is implemented in
 `SW-004`; V0 never silently heals a locator.
 
-Accessible names, labels, and test IDs are literal exact strings. The interpreter must not turn
-them into substring or regular-expression matches.
+Role resolution excludes hidden accessibility targets by default. The trusted interpreter enables
+Playwright's `includeHidden` behavior only while evaluating `assertHidden`; it is interpreter policy,
+not a contract field.
+
+Accessible names and labels use Playwright's exact semantics: case-sensitive, whole-string matching
+after browser/Playwright whitespace normalization. Test IDs are literal exact strings. The
+interpreter must not turn any strategy into a substring or regular-expression match.
 
 XPath, CSS selectors, regular expressions, JavaScript, and custom resolver names are not contract
 fields and are rejected as unknown data.

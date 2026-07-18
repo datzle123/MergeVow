@@ -8,6 +8,7 @@ item.
 ```bash
 corepack enable
 pnpm install
+pnpm browser:install
 pnpm check
 ```
 
