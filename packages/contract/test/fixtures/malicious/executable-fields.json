@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "flow": "executable-fields",
+  "steps": [
+    {
+      "script": "process.env.SECRET",
+      "shell": "whoami",
+      "callback": "https://example.com"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "flow": "home-heading",
+  "steps": [{ "visit": "/" }, { "assertVisible": { "role": "heading", "name": "Welcome" } }]
+}

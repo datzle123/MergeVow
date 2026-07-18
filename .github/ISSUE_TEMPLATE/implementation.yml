@@ -1,0 +1,44 @@
+name: Implementation task
+description: A bounded StillWorks engineering issue
+title: "[SW-___] "
+labels:
+  - implementation
+body:
+  - type: textarea
+    id: objective
+    attributes:
+      label: Objective
+      description: State one user-visible or trust-boundary outcome.
+    validations:
+      required: true
+  - type: textarea
+    id: purpose
+    attributes:
+      label: Purpose
+      description: Explain why this work is required now and which gate has passed.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: List observable passing and failing cases.
+    validations:
+      required: true
+  - type: dropdown
+    id: trust
+    attributes:
+      label: Trust level
+      options:
+        - Local cooperative
+        - PR drift gate
+        - Protected attestation
+    validations:
+      required: true
+  - type: textarea
+    id: exclusions
+    attributes:
+      label: Explicit exclusions
+      description: State adjacent work that is not part of this issue.
+    validations:
+      required: true

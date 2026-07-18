@@ -1,0 +1,418 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stillworks.dev/schema/contract-v1.schema.json",
+  "title": "StillWorks Contract V1",
+  "description": "A closed, data-only browser behavior contract.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "flow", "steps"],
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "flow": {
+      "$ref": "#/$defs/flow"
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/$defs/step"
+      }
+    }
+  },
+  "$defs": {
+    "flow": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "sameOriginPath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048,
+      "pattern": "^/(?!/)(?!.*\\\\)[^\\u0000-\\u001F\\u007F]*$"
+    },
+    "locatorText": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "value": {
+      "type": "string",
+      "maxLength": 4096
+    },
+    "roleLocator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "name"],
+      "properties": {
+        "role": {
+          "type": "string",
+          "enum": [
+            "alert",
+            "alertdialog",
+            "application",
+            "article",
+            "banner",
+            "blockquote",
+            "button",
+            "caption",
+            "cell",
+            "checkbox",
+            "code",
+            "columnheader",
+            "combobox",
+            "complementary",
+            "contentinfo",
+            "definition",
+            "deletion",
+            "dialog",
+            "directory",
+            "document",
+            "emphasis",
+            "feed",
+            "figure",
+            "form",
+            "generic",
+            "grid",
+            "gridcell",
+            "group",
+            "heading",
+            "img",
+            "insertion",
+            "link",
+            "list",
+            "listbox",
+            "listitem",
+            "log",
+            "main",
+            "marquee",
+            "math",
+            "meter",
+            "menu",
+            "menubar",
+            "menuitem",
+            "menuitemcheckbox",
+            "menuitemradio",
+            "navigation",
+            "none",
+            "note",
+            "option",
+            "paragraph",
+            "presentation",
+            "progressbar",
+            "radio",
+            "radiogroup",
+            "region",
+            "row",
+            "rowgroup",
+            "rowheader",
+            "scrollbar",
+            "search",
+            "searchbox",
+            "separator",
+            "slider",
+            "spinbutton",
+            "status",
+            "strong",
+            "subscript",
+            "superscript",
+            "switch",
+            "tab",
+            "table",
+            "tablist",
+            "tabpanel",
+            "term",
+            "textbox",
+            "time",
+            "timer",
+            "toolbar",
+            "tooltip",
+            "tree",
+            "treegrid",
+            "treeitem"
+          ]
+        },
+        "name": {
+          "$ref": "#/$defs/locatorText"
+        }
+      }
+    },
+    "labelLocator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label"],
+      "properties": {
+        "label": {
+          "$ref": "#/$defs/locatorText"
+        }
+      }
+    },
+    "testIdLocator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["testId"],
+      "properties": {
+        "testId": {
+          "$ref": "#/$defs/locatorText"
+        }
+      }
+    },
+    "locator": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/roleLocator"
+        },
+        {
+          "$ref": "#/$defs/labelLocator"
+        },
+        {
+          "$ref": "#/$defs/testIdLocator"
+        }
+      ]
+    },
+    "locatorValuePayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["locator", "value"],
+      "properties": {
+        "locator": {
+          "$ref": "#/$defs/locator"
+        },
+        "value": {
+          "$ref": "#/$defs/value"
+        }
+      }
+    },
+    "locatorStringAssertionPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["locator", "equals"],
+      "properties": {
+        "locator": {
+          "$ref": "#/$defs/locator"
+        },
+        "equals": {
+          "$ref": "#/$defs/value"
+        }
+      }
+    },
+    "locatorCountAssertionPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["locator", "equals"],
+      "properties": {
+        "locator": {
+          "$ref": "#/$defs/locator"
+        },
+        "equals": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      }
+    },
+    "locatorBooleanAssertionPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["locator", "equals"],
+      "properties": {
+        "locator": {
+          "$ref": "#/$defs/locator"
+        },
+        "equals": {
+          "type": "boolean"
+        }
+      }
+    },
+    "visitStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["visit"],
+      "properties": {
+        "visit": {
+          "$ref": "#/$defs/sameOriginPath"
+        }
+      }
+    },
+    "clickStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["click"],
+      "properties": {
+        "click": {
+          "$ref": "#/$defs/locator"
+        }
+      }
+    },
+    "fillStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fill"],
+      "properties": {
+        "fill": {
+          "$ref": "#/$defs/locatorValuePayload"
+        }
+      }
+    },
+    "selectStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["select"],
+      "properties": {
+        "select": {
+          "$ref": "#/$defs/locatorValuePayload"
+        }
+      }
+    },
+    "checkStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["check"],
+      "properties": {
+        "check": {
+          "$ref": "#/$defs/locator"
+        }
+      }
+    },
+    "reloadStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reload"],
+      "properties": {
+        "reload": {
+          "type": "object",
+          "additionalProperties": false
+        }
+      }
+    },
+    "assertVisibleStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assertVisible"],
+      "properties": {
+        "assertVisible": {
+          "$ref": "#/$defs/locator"
+        }
+      }
+    },
+    "assertHiddenStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assertHidden"],
+      "properties": {
+        "assertHidden": {
+          "$ref": "#/$defs/locator"
+        }
+      }
+    },
+    "assertUrlStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assertUrl"],
+      "properties": {
+        "assertUrl": {
+          "$ref": "#/$defs/sameOriginPath"
+        }
+      }
+    },
+    "assertTextStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assertText"],
+      "properties": {
+        "assertText": {
+          "$ref": "#/$defs/locatorStringAssertionPayload"
+        }
+      }
+    },
+    "assertValueStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assertValue"],
+      "properties": {
+        "assertValue": {
+          "$ref": "#/$defs/locatorStringAssertionPayload"
+        }
+      }
+    },
+    "assertCountStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assertCount"],
+      "properties": {
+        "assertCount": {
+          "$ref": "#/$defs/locatorCountAssertionPayload"
+        }
+      }
+    },
+    "assertCheckedStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assertChecked"],
+      "properties": {
+        "assertChecked": {
+          "$ref": "#/$defs/locatorBooleanAssertionPayload"
+        }
+      }
+    },
+    "assertDisabledStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assertDisabled"],
+      "properties": {
+        "assertDisabled": {
+          "$ref": "#/$defs/locatorBooleanAssertionPayload"
+        }
+      }
+    },
+    "step": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/visitStep"
+        },
+        {
+          "$ref": "#/$defs/clickStep"
+        },
+        {
+          "$ref": "#/$defs/fillStep"
+        },
+        {
+          "$ref": "#/$defs/selectStep"
+        },
+        {
+          "$ref": "#/$defs/checkStep"
+        },
+        {
+          "$ref": "#/$defs/reloadStep"
+        },
+        {
+          "$ref": "#/$defs/assertVisibleStep"
+        },
+        {
+          "$ref": "#/$defs/assertHiddenStep"
+        },
+        {
+          "$ref": "#/$defs/assertUrlStep"
+        },
+        {
+          "$ref": "#/$defs/assertTextStep"
+        },
+        {
+          "$ref": "#/$defs/assertValueStep"
+        },
+        {
+          "$ref": "#/$defs/assertCountStep"
+        },
+        {
+          "$ref": "#/$defs/assertCheckedStep"
+        },
+        {
+          "$ref": "#/$defs/assertDisabledStep"
+        }
+      ]
+    }
+  }
+}

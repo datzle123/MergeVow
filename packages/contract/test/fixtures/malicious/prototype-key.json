@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "flow": "prototype-key",
+  "steps": [{ "visit": "/" }],
+  "__proto__": { "polluted": true }
+}

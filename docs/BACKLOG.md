@@ -1,0 +1,108 @@
+# Initial Backlog
+
+## Milestone 0: Preparation
+
+- [x] Product charter and project plan.
+- [x] Threat model baseline.
+- [x] TypeScript-first architecture decision.
+- [x] Public guarantee matrix and non-goals (`SW-001`).
+- [x] Validation and launch kit.
+- [x] Codex project skill.
+- [ ] Reserve GitHub org/repo and npm scope.
+- [ ] Recruit five pilot candidates.
+
+## Completed Issues
+
+### SW-001: Lock Guarantees And Non-Goals
+
+**Status:** Complete on 2026-07-18.
+
+**Objective:** Turn the threat-model draft into the public contract for V0.
+
+**Acceptance criteria:**
+
+- Three trust levels are reviewed and internally consistent.
+- Every V0 non-goal appears in README and threat model.
+- A security reviewer cannot confuse PR drift detection with malicious-code isolation.
+- ADRs reference the final guarantees.
+
+**Outcome:** `docs/THREAT_MODEL.md` is the canonical public contract. ADR-0004 separates artifact
+selection, explicit approval, and hostile-code isolation. README, charter, plan, ADRs, backlog, and
+agent skill use the same three trust levels and V0 non-goals. Replay verdict and proposal governance
+are independent.
+
+### SW-002: Define Contract Schema V1
+
+**Status:** Complete on 2026-07-19.
+
+**Objective:** Create the smallest data model capable of the persistence vertical slice.
+
+**Acceptance criteria:**
+
+- JSON Schema uses `additionalProperties: false`.
+- Supports only the approved V0 action, locator, and assertion opcodes.
+- Rejects executable surfaces, external navigation, excessive size, and excessive depth.
+- Includes valid, invalid, and malicious fixtures.
+
+**Outcome:** `@stillworks/contract` publishes a closed JSON Schema 2020-12 document, matching strict
+TypeScript types, bounded fail-closed parsing, and 30 tests across valid, invalid, and malicious
+inputs. Duplicate decoded keys, dangerous prototype keys, invalid Unicode/UTF-8, executable fields,
+external URL operands, and all named resource limits are rejected without mutating input.
+
+## Ready Issues
+
+### SW-003: Canonical Serialization And Hash
+
+**Objective:** Give accepted and proposed governed bundles a stable content identity.
+
+**Acceptance criteria:** identical semantic JSON produces the same hash across supported platforms;
+invalid JSON values fail closed.
+
+### SW-004: Semantic Locator Resolver
+
+**Objective:** Resolve role/name, label, and test ID without silently healing ambiguity.
+
+**Acceptance criteria:** stable DOM refactors pass; ambiguous and missing locators fail with clear
+evidence.
+
+### SW-005: Interpreter State Machine
+
+**Objective:** Replay a handwritten contract deterministically.
+
+**Acceptance criteria:** cancellation, per-step timeout, total timeout, typed result states, and exact
+failing-step output are covered.
+
+### SW-006: Same-Origin Guard
+
+**Objective:** Prevent contracts from becoming an unrestricted browser/network executor.
+
+**Acceptance criteria:** allowlisted localhost works; external navigation and requests fail closed;
+redirect behavior is tested.
+
+### SW-007: Persistence Vertical Slice
+
+**Objective:** Prove the core value before recorder work.
+
+**Acceptance criteria:** a handwritten contract runs in Chromium, a semantic refactor passes, a
+persistence bug fails after reload, and a minimal report explains the failure.
+
+## Planned Issues
+
+| ID | Deliverable | Depends on |
+|---|---|---|
+| SW-008 | Recorder action capture | SW-004, SW-007 |
+| SW-009 | Checkpoint/assertion overlay | SW-008 |
+| SW-010 | Sensitive-input redaction | SW-008 |
+| SW-011 | Screenshot, console, and trace evidence | SW-005 |
+| SW-012 | Semantic contract diff | SW-003 |
+| SW-013 | CLI `init`, `record`, `check`, `diff` | SW-009, SW-011 |
+| SW-014 | Exact base-SHA contract/config/schema loader | SW-003 |
+| SW-015 | Read-only PR GitHub Action | SW-014 |
+| SW-016 | Independent proposal status for all governed head-bundle changes | SW-012, SW-015 |
+| SW-017 | Malicious-contract fuzz suite | SW-002, SW-006 |
+| SW-018 | Three demo apps and mutation corpus | SW-013, SW-015 |
+| SW-019 | Cross-platform and 100-run soak | SW-018 |
+| SW-020 | npm provenance and release automation | SW-017, SW-019 |
+| SW-021 | Public quickstart and enforcement docs | V0 complete |
+| SW-022 | Fully bound maintainer approval record | Post-V0 demand gate |
+| SW-023 | External enforcement and isolated ephemeral execution | Protected-enforcement gate |

@@ -1,0 +1,45 @@
+name: Bug report
+description: Reproducible incorrect StillWorks behavior
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Include a sanitized contract, command, and deterministic steps.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Regression missed
+        - False failure
+        - Flaky result
+        - Infrastructure error
+        - Evidence or redaction
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Node, pnpm, StillWorks, and browser versions.
+    validations:
+      required: true

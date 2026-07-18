@@ -1,0 +1,11 @@
+packages:
+  - "packages/*"
+  - "action"
+  - "services/*"
+  - "demos/*"
+
+allowBuilds:
+  esbuild: true
+
+overrides:
+  esbuild: 0.28.1

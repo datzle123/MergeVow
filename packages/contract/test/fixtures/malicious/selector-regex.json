@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "flow": "selector-regex",
+  "steps": [
+    {
+      "click": {
+        "css": "body *",
+        "xpath": "//*",
+        "regex": "(a+)+$"
+      }
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+name: Validation experiment
+description: Interview, pilot, benchmark, or positioning experiment
+title: "[Validation] "
+labels:
+  - validation
+body:
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: Falsifiable hypothesis
+    validations:
+      required: true
+  - type: textarea
+    id: method
+    attributes:
+      label: Method and artifacts
+    validations:
+      required: true
+  - type: textarea
+    id: gate
+    attributes:
+      label: Continue, kill, or pivot gate
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Result
+      description: Complete after the experiment; do not count compliments as evidence.

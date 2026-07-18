@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "flow": "todo-persistence",
+  "steps": [
+    { "visit": "/todos" },
+    { "click": { "role": "button", "name": "Add task" } },
+    {
+      "fill": {
+        "locator": { "label": "Title" },
+        "value": "Ship release"
+      }
+    },
+    { "click": { "role": "button", "name": "Create" } },
+    { "assertVisible": { "role": "listitem", "name": "Ship release" } },
+    { "reload": {} },
+    { "assertVisible": { "role": "listitem", "name": "Ship release" } }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "stillworks",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Human-owned behavior contracts for CI.",
+  "license": "MIT",
+  "packageManager": "pnpm@11.14.0",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "build": "pnpm -r --if-present build",
+    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+    "ci": "pnpm check",
+    "format": "biome format --write .",
+    "lint": "biome check .",
+    "test": "pnpm -r --if-present test",
+    "typecheck": "pnpm -r --if-present typecheck"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.4",
+    "@playwright/test": "1.61.1",
+    "@types/node": "26.1.1",
+    "tsup": "8.5.1",
+    "tsx": "4.23.1",
+    "typescript": "7.0.2",
+    "vitest": "4.1.10"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "version": 999,
+  "version": 1,
+  "flow": "duplicate-key",
+  "steps": [{ "visit": "/" }]
+}

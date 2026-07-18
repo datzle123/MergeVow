@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "flow": "all-opcodes",
+  "steps": [
+    { "visit": "/todos?seed=1#app" },
+    { "click": { "role": "button", "name": "Add task" } },
+    {
+      "fill": {
+        "locator": { "label": "Title" },
+        "value": "Ship release"
+      }
+    },
+    {
+      "select": {
+        "locator": { "label": "Priority" },
+        "value": "high"
+      }
+    },
+    { "check": { "testId": "accept-terms" } },
+    { "reload": {} },
+    { "assertVisible": { "testId": "todo-row" } },
+    { "assertHidden": { "label": "Loading" } },
+    { "assertUrl": "/todos?seed=1#app" },
+    {
+      "assertText": {
+        "locator": { "testId": "todo-title" },
+        "equals": "Ship release"
+      }
+    },
+    {
+      "assertValue": {
+        "locator": { "label": "Title" },
+        "equals": "Ship release"
+      }
+    },
+    {
+      "assertCount": {
+        "locator": { "role": "listitem", "name": "Ship release" },
+        "equals": 1
+      }
+    },
+    {
+      "assertChecked": {
+        "locator": { "testId": "accept-terms" },
+        "equals": true
+      }
+    },
+    {
+      "assertDisabled": {
+        "locator": { "role": "button", "name": "Save" },
+        "equals": false
+      }
+    }
+  ]
+}

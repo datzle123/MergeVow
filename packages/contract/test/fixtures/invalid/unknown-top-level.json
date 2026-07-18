@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "flow": "unknown-top-level",
+  "steps": [{ "visit": "/" }],
+  "onFailure": "ignore"
+}

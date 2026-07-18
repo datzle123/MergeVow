@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "flow": "mixed-locator",
+  "steps": [
+    {
+      "click": {
+        "label": "Create",
+        "testId": "create"
+      }
+    }
+  ]
+}
