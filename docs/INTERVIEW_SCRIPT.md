@@ -1,6 +1,6 @@
 # Artifact Interview Script
 
-Do not pitch StillWorks during the first 30 minutes.
+Do not pitch MergeVow during the first 30 minutes.
 
 1. Show me the latest user-visible regression that passed CI.
 2. Which PR caused it, and what evidence looked green at merge time?

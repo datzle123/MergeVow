@@ -1,5 +1,5 @@
 name: Bug report
-description: Reproducible incorrect StillWorks behavior
+description: Reproducible incorrect MergeVow behavior
 title: "[Bug] "
 labels:
   - bug
@@ -40,6 +40,6 @@ body:
     id: environment
     attributes:
       label: Environment
-      description: OS, Node, pnpm, StillWorks, and browser versions.
+      description: OS, Node, pnpm, MergeVow, and browser versions.
     validations:
       required: true

@@ -5,7 +5,7 @@ Date: 2026-07-18
 
 ## Decision
 
-StillWorks contracts use a versioned JSON schema and a fixed interpreter. They cannot contain
+MergeVow contracts use a versioned JSON schema and a fixed interpreter. They cannot contain
 JavaScript, shell, imports, callbacks, XPath, arbitrary CSS selectors, or executable regex.
 
 Unknown and duplicate fields fail validation. Contracts have explicit byte, depth, node, string,

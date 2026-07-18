@@ -1,15 +1,15 @@
 ---
-name: build-stillworks
-description: Build and maintain the StillWorks open-source project while preserving its human-owned behavior-contract model. Use when Codex works on the StillWorks product charter, JSON contract schema, canonical hashing, semantic locator resolution, deterministic interpreter, Playwright driver or recorder, evidence reports, CLI, Git merge-base behavior, GitHub Action/App enforcement, security hardening, validation experiments, benchmarks, releases, or issue planning in the StillWorks repository.
+name: build-mergevow
+description: Build and maintain the MergeVow open-source project while preserving its human-owned behavior-contract model. Use when Codex works on the MergeVow product charter, JSON contract schema, canonical hashing, semantic locator resolution, deterministic interpreter, Playwright driver or recorder, evidence reports, CLI, Git merge-base behavior, GitHub Action/App enforcement, security hardening, validation experiments, benchmarks, releases, or issue planning in the MergeVow repository.
 ---
 
-# Build StillWorks
+# Build MergeVow
 
-Build the smallest approved StillWorks issue without weakening the definition-of-done boundary.
+Build the smallest approved MergeVow issue without weakening the definition-of-done boundary.
 
 ## Start Every Task
 
-1. Locate the StillWorks repository root.
+1. Locate the MergeVow repository root.
 2. Read `AGENTS.md`, `docs/PRODUCT_CHARTER.md`, and `docs/THREAT_MODEL.md`.
 3. Find the active `SW-*` issue in `docs/BACKLOG.md`.
 4. Read the relevant ADR and demo spec.
@@ -27,7 +27,7 @@ Pain -> Authoring experience -> Replay reliability -> PR drift gate -> Protected
 
 Do not implement recorder polish before the handwritten-contract vertical slice. Do not implement a
 GitHub App, hosted dashboard, HTTP-service or command-process contract target, IDE extension, or MCP
-surface before its demand gate. StillWorks' own CLI remains in V0 scope.
+surface before its demand gate. MergeVow's own CLI remains in V0 scope.
 
 ## Preserve Product Invariants
 
@@ -73,7 +73,7 @@ redaction before persistence without promising perfect secret detection.
 
 Lead with behavioral regressions, trust-boundary violations, bypasses, flakiness, secret exposure,
 and missing tests. Check whether a head artifact can influence the exact-base oracle or whether a
-governed change avoids proposal review. Check whether a “convenience” feature creates an executable
+governed change avoids proposal review. Check whether a "convenience" feature creates an executable
 contract surface or turns provenance-separated directories into a false isolation claim.
 
 Do not approve architecture breadth merely because implementation is easy for an agent.

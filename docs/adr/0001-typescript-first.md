@@ -5,7 +5,7 @@ Date: 2026-07-18
 
 ## Context
 
-StillWorks depends on Playwright, browser/CDP integration, an `npx` acquisition path, GitHub Actions,
+MergeVow depends on Playwright, browser/CDP integration, an `npx` acquisition path, GitHub Actions,
 JSON contracts, and static HTML reports. Contributor installation friction matters more than native
 runtime performance in V0.
 

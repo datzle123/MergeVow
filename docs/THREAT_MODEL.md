@@ -3,7 +3,7 @@
 Status: Locked for V0 by `SW-001`<br>
 Last reviewed: 2026-07-18
 
-This document is the canonical source for StillWorks security and integrity claims. Product copy,
+This document is the canonical source for MergeVow security and integrity claims. Product copy,
 ADRs, issues, and implementation must not promise more than the guarantees below.
 
 ## Terms
@@ -24,7 +24,7 @@ ADRs, issues, and implementation must not promise more than the guarantees below
   verdict but never defines pass or fail, and every evidence bundle is treated as sensitive.
 
 **Human-owned** is a product-governance principle. **Human-approved** is reserved for an attested
-bundle; StillWorks does not infer approval from branch location or prove that an approver is
+bundle; MergeVow does not infer approval from branch location or prove that an approver is
 competent.
 
 ## Actors And Assumptions
@@ -34,7 +34,7 @@ competent.
   PR-authored metadata, and report fields are untrusted.
 - Repository maintainers and the configured enforcement owner are trusted for policy decisions.
 - Trusted event metadata supplies the GitHub PR base SHA. GitHub, the selected CI control plane,
-  runner host, pinned StillWorks release, host kernel, and release publisher are trusted
+  runner host, pinned MergeVow release, host kernel, and release publisher are trusted
   infrastructure for the V0 PR Drift Gate.
 - Evidence viewers must handle reports as sensitive untrusted content. External services are not
   trusted with credentials or unrestricted traffic.
@@ -100,7 +100,7 @@ blocking and never become the active oracle automatically.
 
 - Contracts are versioned, data-only, size/depth bounded, and reject unknown fields.
 - Report fields are escaped before rendering. Evidence retention is bounded.
-- StillWorks does not intentionally serialize cookies, authorization headers, or browser storage
+- MergeVow does not intentionally serialize cookies, authorization headers, or browser storage
   state; it rejects password-control capture and applies tested configured redaction before storage.
 - Network response bodies are excluded from evidence by default. Use synthetic test data and assume
   arbitrary page, URL, console, and screenshot content may still contain secrets.
@@ -159,7 +159,7 @@ blocking and never become the active oracle automatically.
 - Arbitrary JavaScript, shell, imports, callbacks, XPath, arbitrary CSS selectors, or executable
   regex in contracts.
 - AI self-healing or automatic contract approval.
-- HTTP-service or command-process behavior contracts. StillWorks' own `init`, `record`, `check`, and
+- HTTP-service or command-process behavior contracts. MergeVow's own `init`, `record`, `check`, and
   `diff` CLI remains in scope.
 - A hosted dashboard, IDE extension, or MCP integration.
 - A security sandbox, hostile-candidate isolation, or defense against an app deliberately detecting

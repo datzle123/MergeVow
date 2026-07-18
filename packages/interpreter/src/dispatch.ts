@@ -1,4 +1,4 @@
-import type { ContractOpcode, ContractStep } from "@stillworks/contract";
+import type { ContractOpcode, ContractStep } from "@mergevow/contract";
 
 import type { DriverStepResult, InterpreterDriver, StepExecutionContext } from "./types.js";
 

@@ -1,12 +1,12 @@
 # Ready To Start
 
-StillWorks is in implementation. The contract kernel, strict semantic locator resolver,
+MergeVow is in implementation. The contract kernel, strict semantic locator resolver,
 deterministic interpreter state machine, and loopback same-origin browser guard are built and tested;
 real action replay has not been built yet.
 
 ## Locked Decisions
 
-- Name: StillWorks.
+- Name: MergeVow.
 - Language: TypeScript first; Rust only after a measured systems requirement.
 - Runtime baseline: Node.js 24 and pnpm 11.
 - Browser wedge: deterministic, loginless Chromium.
@@ -20,9 +20,9 @@ real action replay has not been built yet.
 - pnpm monorepo folder layout and TypeScript strict base config.
 - Biome, TypeScript, Vitest, tsx, tsup, Playwright, and Node types with a lockfile.
 - GitHub issue forms, PR template, and ordinary repository lint/test CI. This scaffold workflow is
-  not the StillWorks PR Drift Gate and provides no artifact-selection or isolation guarantee.
+  not the MergeVow PR Drift Gate and provides no artifact-selection or isolation guarantee.
 - `AGENTS.md` for repository agents.
-- Version-controlled `build-stillworks` skill and a validated personal installation.
+- Version-controlled `build-mergevow` skill and a validated personal installation.
 - MIT license, contributing guide, and security policy.
 
 ## Verified Locally
@@ -31,13 +31,13 @@ real action replay has not been built yet.
 - `pnpm browser:install`
 - `pnpm check`
 - `pnpm audit --audit-level low`: no known vulnerabilities
-- `@stillworks/contract`: 43 Vitest cases covering schema, hostile inputs, canonicalization, and hash
+- `@mergevow/contract`: 43 Vitest cases covering schema, hostile inputs, canonicalization, and hash
 - Contract package typecheck, clean build, package dry-run, and built-ESM parser smoke
-- `@stillworks/playwright-driver`: 29 real-Chromium cases covering semantic locators plus loopback
+- `@mergevow/playwright-driver`: 29 real-Chromium cases covering semantic locators plus loopback
   origin validation, proxy and cookie isolation, requests, redirects, transport failures,
   unsupported realtime/worker APIs, and Service Worker blocking
 - Playwright-driver typecheck, clean build, and package dry-run
-- `@stillworks/interpreter`: 14 cases covering all opcode dispatch, exact regression output, driver
+- `@mergevow/interpreter`: 14 cases covering all opcode dispatch, exact regression output, driver
   failure/protocol, cancellation, per-step/total timeout, and invalid boundary inputs
 - Interpreter typecheck, clean build, package dry-run, and built-ESM state-machine smoke
 - Published and built JSON Schema SHA-256 equality
@@ -49,7 +49,7 @@ real action replay has not been built yet.
 
 ## Published
 
-- Public repository: [datzle123/StillWorks](https://github.com/datzle123/StillWorks).
+- Public repository: [datzle123/MergeVow](https://github.com/datzle123/MergeVow).
 - Repository CI, Issues, Discussions, security reporting, and project topics are enabled.
 
 ## External Setup Still Required

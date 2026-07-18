@@ -12,7 +12,7 @@ chain reach the network without invoking the route handler again. The browser-co
 is also unsuitable for redirect preflight: it inherits a browser launch proxy and shares the browser
 cookie jar, which changes `fetch(..., { credentials: "omit" })` behavior.
 
-StillWorks needs a deterministic browser primitive for the persistence vertical slice without
+MergeVow needs a deterministic browser primitive for the persistence vertical slice without
 claiming process-wide egress control or hostile-code isolation.
 
 ## Decision

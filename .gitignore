@@ -11,4 +11,4 @@ test-results/
 .DS_Store
 Thumbs.db
 *.tsbuildinfo
-.stillworks/runs/
+.mergevow/runs/

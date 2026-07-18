@@ -1,4 +1,4 @@
-# Ordinary repository CI: this executes PR-controlled package scripts and is not a StillWorks PR
+# Ordinary repository CI: this executes PR-controlled package scripts and is not a MergeVow PR
 # Drift Gate or a hostile-code isolation boundary.
 name: Repository CI
 

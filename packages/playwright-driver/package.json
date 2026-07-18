@@ -1,8 +1,8 @@
 {
-  "name": "@stillworks/playwright-driver",
+  "name": "@mergevow/playwright-driver",
   "version": "0.0.0",
   "private": true,
-  "description": "Pinned Chromium adapter for StillWorks behavior contracts.",
+  "description": "Pinned Chromium adapter for MergeVow behavior contracts.",
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
@@ -25,7 +25,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@stillworks/contract": "workspace:*",
+    "@mergevow/contract": "workspace:*",
     "playwright": "1.61.1"
   },
   "engines": {

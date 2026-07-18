@@ -1,4 +1,4 @@
-import type { ContractStep, ContractValidationIssue, Locator } from "@stillworks/contract";
+import type { ContractStep, ContractValidationIssue, Locator } from "@mergevow/contract";
 
 export const EXECUTION_VERDICTS = {
   flaky: "FLAKY",

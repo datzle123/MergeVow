@@ -1,4 +1,4 @@
-import type { Locator as ContractLocator } from "@stillworks/contract";
+import type { Locator as ContractLocator } from "@mergevow/contract";
 import type { Browser, BrowserContext, Page } from "playwright";
 import { chromium } from "playwright";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";

@@ -1,6 +1,6 @@
 # Contributing
 
-StillWorks is in early implementation. Contributions should begin from an approved `SW-*` backlog
+MergeVow is in early implementation. Contributions should begin from an approved `SW-*` backlog
 item.
 
 ## Development

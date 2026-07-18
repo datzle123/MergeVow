@@ -1,4 +1,4 @@
-import type { ContractStep, Locator } from "@stillworks/contract";
+import type { ContractStep, Locator } from "@mergevow/contract";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {

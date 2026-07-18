@@ -1,5 +1,5 @@
 {
-  "name": "stillworks",
+  "name": "@mergevow/workspace",
   "version": "0.0.0",
   "private": true,
   "description": "Human-owned behavior contracts for CI.",

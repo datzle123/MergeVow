@@ -1,6 +1,6 @@
-# @stillworks/playwright-driver
+# @mergevow/playwright-driver
 
-Workspace-only pinned Playwright primitives for StillWorks browser replay.
+Workspace-only pinned Playwright primitives for MergeVow browser replay.
 
 ## Working Today
 

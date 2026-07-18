@@ -1,4 +1,0 @@
-interface:
-  display_name: "Build StillWorks"
-  short_description: "Build StillWorks without moving the goalposts"
-  default_prompt: "Use $build-stillworks to implement the next approved StillWorks issue with its trust boundaries intact."

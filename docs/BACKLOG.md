@@ -45,7 +45,7 @@ are independent.
 - Rejects executable surfaces, external navigation, excessive size, and excessive depth.
 - Includes valid, invalid, and malicious fixtures.
 
-**Outcome:** `@stillworks/contract` publishes a closed JSON Schema 2020-12 document, matching strict
+**Outcome:** `@mergevow/contract` publishes a closed JSON Schema 2020-12 document, matching strict
 TypeScript types, bounded fail-closed parsing, and 30 tests across valid, invalid, and malicious
 inputs. Duplicate decoded keys, dangerous prototype keys, invalid Unicode/UTF-8, executable fields,
 external URL operands, and all named resource limits are rejected without mutating input.
@@ -67,14 +67,14 @@ Windows, and macOS.
 
 ### SW-004: Semantic Locator Resolver
 
-**Status:** Complete on 2026-07-19. See [GitHub issue #2](https://github.com/datzle123/StillWorks/issues/2).
+**Status:** Complete on 2026-07-19. See [GitHub issue #2](https://github.com/datzle123/MergeVow/issues/2).
 
 **Objective:** Resolve role/name, label, and test ID without silently healing ambiguity.
 
 **Acceptance criteria:** stable DOM refactors pass; ambiguous and missing locators fail with clear
 evidence.
 
-**Outcome:** `@stillworks/playwright-driver` maps only the three approved Contract V1 locator
+**Outcome:** `@mergevow/playwright-driver` maps only the three approved Contract V1 locator
 strategies to exact Playwright queries. Unique resolution returns a live locator only for one match;
 zero and multiple matches return structured `LOCATOR_MISSING` or `LOCATOR_AMBIGUOUS` evidence.
 Count observation remains separate for `assertCount`, while Playwright errors propagate for the
@@ -84,32 +84,30 @@ CSS/XPath/regex fallback or self-healing.
 
 ### SW-005: Interpreter State Machine
 
-**Status:** Complete on 2026-07-19. See [GitHub issue #4](https://github.com/datzle123/StillWorks/issues/4).
+**Status:** Complete on 2026-07-19. See [GitHub issue #4](https://github.com/datzle123/MergeVow/issues/4).
 
 **Objective:** Replay a handwritten contract deterministically.
 
 **Acceptance criteria:** cancellation, per-step timeout, total timeout, typed result states, and exact
 failing-step output are covered.
 
-**Outcome:** `@stillworks/interpreter` validates and freezes Contract V1, dispatches all 14 opcodes
+**Outcome:** `@mergevow/interpreter` validates and freezes Contract V1, dispatches all 14 opcodes
 through explicit driver methods in source order, and stops on the first failure. Fourteen controlled
 tests cover `PASS`, exact-step `REGRESSION`, driver/protocol `INFRA_ERROR`, external cancellation,
 per-step and total timeout, trusted policy bounds, malformed contracts, and prototype-polluted
 opcodes. Results contain no timestamp or duration. The interpreter performs no retry and never emits
 `FLAKY`; ADR-0006 records the boundary.
 
-## Ready Issues
-
 ### SW-006: Same-Origin Guard
 
-**Status:** Complete on 2026-07-19. See [GitHub issue #6](https://github.com/datzle123/StillWorks/issues/6).
+**Status:** Complete on 2026-07-19. See [GitHub issue #6](https://github.com/datzle123/MergeVow/issues/6).
 
 **Objective:** Prevent contracts from becoming an unrestricted browser/network executor.
 
 **Acceptance criteria:** allowlisted localhost works; external navigation and requests fail closed;
 redirect behavior is tested.
 
-**Outcome:** `@stillworks/playwright-driver` creates a Service-Worker-free context for one exact
+**Outcome:** `@mergevow/playwright-driver` creates a Service-Worker-free context for one exact
 HTTP(S) loopback origin. A fresh direct request client per routed request preserves cookie
 credentials semantics and avoids inherited launch proxies; every redirect `Location` is checked.
 An owned loopback deny proxy and unsupported-API policy reject non-routed proxy traffic, WebSockets,
@@ -117,6 +115,23 @@ EventSource, WebTransport, WebRTC, and dedicated/shared workers. Policy violatio
 failures are frozen, bounded, and separate, while owned closure prevents route errors from escaping.
 Nineteen real-Chromium guard tests use only controlled loopback servers. ADR-0007 records why this is
 request/API policy rather than a complete browser or network sandbox.
+
+### SW-006A: Establish A Publishable MergeVow Identity
+
+**Status:** Complete on 2026-07-19. See
+[GitHub issue #8](https://github.com/datzle123/MergeVow/issues/8).
+
+**Objective:** Replace the collided project/package identity before adding more public API surface.
+
+**Acceptance criteria:** repository, packages, imports, schema identifier, config paths, docs, and
+project skill use one consistent identity; no npm/domain ownership is claimed before reservation.
+
+**Outcome:** The project is `MergeVow`, the repository is `datzle123/MergeVow`, prospective workspace
+packages use `@mergevow/*`, the future CLI is `mergevow`, and local run state lives under
+`.mergevow/`. ADR-0008 records the availability snapshot, decision, and unreserved namespace/domain
+limitation. The checkout moved into the configured Codex workspace instead of using drive F.
+
+## Ready Issues
 
 ### SW-007: Persistence Vertical Slice
 

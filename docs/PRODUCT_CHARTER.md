@@ -14,7 +14,7 @@ PR Drift Gate uses a base-selected oracle for one configured invocation. Explici
 reserved for post-V0 Protected Attestation, as defined in
 [`THREAT_MODEL.md`](THREAT_MODEL.md).
 
-## Why StillWorks Exists
+## Why MergeVow Exists
 
 1. General developers need a faster bridge from manual browser checks to durable regression tests.
 2. Human and agent-authored PRs can change implementation and verification together; accepted
@@ -45,7 +45,7 @@ malicious-code sandbox guarantee.
 
 ## North Star
 
-Weekly repositories running StillWorks on at least three PRs within 14 days.
+Weekly repositories running MergeVow on at least three PRs within 14 days.
 
 ## V0 Non-Goals
 
@@ -60,7 +60,7 @@ Weekly repositories running StillWorks on at least three PRs within 14 days.
 - Arbitrary JavaScript, shell, imports, callbacks, XPath, arbitrary CSS selectors, or executable
   regex in contracts.
 - AI self-healing or automatic contract approval.
-- HTTP-service or command-process behavior contracts. StillWorks' own `init`, `record`, `check`, and
+- HTTP-service or command-process behavior contracts. MergeVow's own `init`, `record`, `check`, and
   `diff` CLI remains in scope.
 - A hosted dashboard, IDE extension, or MCP integration.
 - A security sandbox, hostile-candidate isolation, or defense against an app deliberately detecting

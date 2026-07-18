@@ -1,9 +1,10 @@
 # Contract Specification V1
 
 Status: Locked for implementation by `SW-002`<br>
-Schema ID: `https://stillworks.dev/schema/contract-v1.schema.json`
+Schema ID:
+`https://github.com/datzle123/MergeVow/blob/main/packages/contract/schema/contract-v1.schema.json`
 
-This document defines StillWorks' first data-only browser contract. The JSON Schema in
+This document defines MergeVow's first data-only browser contract. The JSON Schema in
 [`packages/contract/schema/contract-v1.schema.json`](../packages/contract/schema/contract-v1.schema.json)
 is the machine-readable authority. This specification defines the wire format and the resource
 rules that surround parsing it.
@@ -133,7 +134,7 @@ identical.
 
 ## Canonical Identity
 
-After validation, StillWorks serializes the contract with RFC 8785 JSON Canonicalization Scheme and
+After validation, MergeVow serializes the contract with RFC 8785 JSON Canonicalization Scheme and
 hashes the UTF-8 canonical JSON with SHA-256. The public identity format is
 `sha256:<64 lowercase hexadecimal characters>`.
 

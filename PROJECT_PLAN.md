@@ -1,6 +1,6 @@
-# StillWorks Project Plan
+# MergeVow Project Plan
 
-> Project name: StillWorks<br>
+> Project name: MergeVow<br>
 > Product line: **Show it once. Keep it working.**<br>
 > Secondary line: **Your agent can edit the code, not the definition of done.** *(Protected
 > Attestation target; see the qualified V0 claim below.)*<br>
@@ -25,7 +25,7 @@ V0 thành công khi:
 
 ### Mục đích
 
-StillWorks không tồn tại chỉ để “chống AI”. Nó giải quyết hai việc:
+MergeVow không tồn tại chỉ để “chống AI”. Nó giải quyết hai việc:
 
 1. Giúp dev biến manual acceptance flow thành regression check nhanh hơn viết E2E test bằng tay.
 2. Khi code được viết bởi agent hoặc contributor, tách oracle đang chấm khỏi candidate patch và luôn
@@ -40,7 +40,7 @@ StillWorks không tồn tại chỉ để “chống AI”. Nó giải quyết h
 4. Chỉ khi core có nhu cầu và đủ ổn định mới làm recorder UI.
 5. Sau recorder mới làm report, CLI và GitHub Action chọn oracle từ đúng base SHA.
 6. GitHub App, protected approval, contract cho HTTP service hoặc command process chỉ được làm sau các
-   demand gate trong tài liệu. CLI của chính StillWorks vẫn thuộc V0.
+   demand gate trong tài liệu. CLI của chính MergeVow vẫn thuộc V0.
 
 ### Nguyên tắc quyết định
 
@@ -52,7 +52,7 @@ Codex giúp tăng tốc code, nhưng không được dùng tốc độ để b�
 
 ## 1. Executive Summary
 
-StillWorks lets a developer demonstrate one critical browser workflow, select a few semantic checkpoints, and turn that intent into a durable, data-only behavior contract.
+MergeVow lets a developer demonstrate one critical browser workflow, select a few semantic checkpoints, and turn that intent into a durable, data-only behavior contract.
 
 Local checks replay the contract selected by the user. When the configured PR Drift Gate executes as
 specified, it loads contract, config, and schema from one exact base SHA and runner semantics from an
@@ -111,7 +111,7 @@ in [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md).
 - Arbitrary JavaScript, shell, imports, callbacks, XPath, arbitrary CSS selectors, or executable
   regex in contracts.
 - AI self-healing or automatic contract approval.
-- HTTP-service or command-process behavior contracts. StillWorks' own `init`, `record`, `check`, and
+- HTTP-service or command-process behavior contracts. MergeVow's own `init`, `record`, `check`, and
   `diff` CLI remains in scope.
 - A hosted dashboard, IDE extension, or MCP integration.
 - A security sandbox, hostile-candidate isolation, or defense against an app deliberately detecting
@@ -147,17 +147,17 @@ General web developers and open-source maintainers who do not use coding agents 
 ### Happy Path
 
 ```bash
-npx stillworks init --start "pnpm start:test"
-npx stillworks record http://127.0.0.1:3000 --flow checkout
-npx stillworks check
-npx stillworks check --base origin/main
+npx mergevow init --start "pnpm start:test"
+npx mergevow record http://127.0.0.1:3000 --flow checkout
+npx mergevow check
+npx mergevow check --base origin/main
 ```
 
-1. StillWorks starts or connects to the app.
+1. MergeVow starts or connects to the app.
 2. A headed Chromium window opens.
 3. The developer performs the flow normally.
 4. An overlay lets the developer pin 3-8 meaningful checkpoints.
-5. StillWorks emits `.stillworks/checkout.json`.
+5. MergeVow emits `.mergevow/checkout.json`.
 6. `check` replays the contract locally.
 7. The configured CI check resolves and records one exact PR base SHA, loads its accepted bundle plus
    an immutable runner release, and runs that oracle against the candidate app.
@@ -232,7 +232,7 @@ automatically.
 
 ### North-Star Metric
 
-**Weekly repositories running StillWorks as a PR check.**
+**Weekly repositories running MergeVow as a PR check.**
 
 Stars measure distribution. A required check that remains enabled measures product value.
 
@@ -242,7 +242,7 @@ Stars measure distribution. A required check that remains enabled measures produ
 - Clean-flow unexpected failure rate: under 2% across 50 consecutive runs.
 - Seeded semantic regression recall: at least 80% in concierge, at least 90% before public beta.
 - Intentional-change review time: under 2 minutes.
-- StillWorks never intentionally serializes cookies, authorization headers, or browser storage
+- MergeVow never intentionally serializes cookies, authorization headers, or browser storage
   state; password capture is rejected and tested redaction runs before persistence. Evidence remains
   sensitive, and arbitrary page/user content cannot be guaranteed secret-free.
 - At least 3 of 5 concierge pilots keep the check after two weeks.
@@ -352,7 +352,7 @@ Recommended stack:
 ### Repository Layout
 
 ```text
-stillworks/
+mergevow/
   packages/
     contract/           # schema, types, canonicalization, semantic diff
     interpreter/        # deterministic step state machine
@@ -519,9 +519,9 @@ AI-specific line remains the memorable secondary hook, not the only market defin
 
 ### Launch Assets
 
-- `npx stillworks demo` completing in under 60 seconds.
+- `npx mergevow demo` completing in under 60 seconds.
 - A 45-second GIF: an agent breaks persistence and edits the head contract; ordinary head tests pass,
-  while the configured StillWorks check keeps the exact-base oracle, reports `REGRESSION`, and marks
+  while the configured MergeVow check keeps the exact-base oracle, reports `REGRESSION`, and marks
   the proposal `CHANGE_REQUIRES_APPROVAL`.
 - Three minimal demo repositories.
 - A public mutation benchmark with reproducible results.
@@ -578,7 +578,7 @@ Pivot rules:
 - Auth blocks the majority: narrow to component/demo environments or prioritize safe runtime auth references.
 - Do not add HTTP-service or command-process contract targets until there are at least 10
   weekly-active browser repositories and three organic adapter requests. This does not block the
-  StillWorks CLI.
+  MergeVow CLI.
 
 ## 16. Working With Codex 5.6 Sol Ultra
 
@@ -607,7 +607,7 @@ Use the model to increase implementation throughput without allowing it to blur 
 
 Do these in order:
 
-1. Reserve the StillWorks GitHub organization/repository and npm scope; confirm trademark, package, and domain availability before public beta.
+1. Reserve the MergeVow GitHub organization/repository and npm scope; confirm trademark, package, and domain availability before public beta.
 2. Create the repository with MIT or Apache-2.0 license, Code of Conduct, Security Policy, issue templates, and Discussions.
 3. Add `AGENTS.md`, product charter, threat model, and ADR-001 before implementation.
 4. Create issues `SW-001` through `SW-007` and the three demo scenarios.

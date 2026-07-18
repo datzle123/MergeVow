@@ -17,7 +17,7 @@ const MAX_TRANSPORT_TIMEOUT_MS = 30_000;
 const MAX_VIOLATION_TEXT_LENGTH = 4_096;
 const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
 const ROUTE_ALL = "**/*";
-const UNSUPPORTED_API_BINDING = "__stillworksUnsupportedBrowserApi";
+const UNSUPPORTED_API_BINDING = "__mergevowUnsupportedBrowserApi";
 const UNSUPPORTED_BROWSER_APIS = {
   EventSource: "eventsource",
   RTCPeerConnection: "webrtc",
@@ -293,7 +293,7 @@ async function startDenyProxy(
     onAttempt(proxyAttempt(request, "transport"));
     response.statusCode = 403;
     response.setHeader("connection", "close");
-    response.end("StillWorks guarded contexts do not permit direct proxy traffic.");
+    response.end("MergeVow guarded contexts do not permit direct proxy traffic.");
   });
   server.on("connection", (socket) => {
     sockets.add(socket);
@@ -445,7 +445,7 @@ export async function createGuardedBrowserContext(
   const routeWebSocket = async (webSocket: WebSocketRoute): Promise<void> => {
     recordViolation(webSocketViolation(webSocket, allowedOrigin));
     await webSocket
-      .close({ code: 1008, reason: "WebSocket traffic is outside StillWorks V0." })
+      .close({ code: 1008, reason: "WebSocket traffic is outside MergeVow V0." })
       .catch(() => undefined);
   };
   const observeNavigation = (frame: Frame): void => {
@@ -480,7 +480,7 @@ export async function createGuardedBrowserContext(
                 void notify(api);
               }
               throw new DOMException(
-                `${constructorName} is outside the StillWorks V0 browser profile.`,
+                `${constructorName} is outside the MergeVow V0 browser profile.`,
                 "NotSupportedError",
               );
             }

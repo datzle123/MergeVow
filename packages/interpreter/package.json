@@ -1,8 +1,8 @@
 {
-  "name": "@stillworks/interpreter",
+  "name": "@mergevow/interpreter",
   "version": "0.0.0",
   "private": true,
-  "description": "Deterministic Contract V1 state machine for StillWorks.",
+  "description": "Deterministic Contract V1 state machine for MergeVow.",
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
@@ -25,7 +25,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@stillworks/contract": "workspace:*"
+    "@mergevow/contract": "workspace:*"
   },
   "engines": {
     "node": ">=24.0.0"

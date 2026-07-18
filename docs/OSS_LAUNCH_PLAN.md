@@ -6,12 +6,12 @@ Category: human-owned behavior contracts for CI.
 
 Headline: **Show it once. Keep it working.**
 
-AI is an amplifier, not the whole audience. Do not market StillWorks as another test generator,
+AI is an amplifier, not the whole audience. Do not market MergeVow as another test generator,
 pixel-diff tool, self-healing suite, or zero-flake system.
 
 ## Required Launch Assets
 
-- `npx stillworks demo` completes without login or API key in under 60 seconds.
+- `npx mergevow demo` completes without login or API key in under 60 seconds.
 - A 40-second GIF shows a persistence regression and head-contract tampering.
 - Three public demo PR sequences.
 - A reproducible mutation benchmark.

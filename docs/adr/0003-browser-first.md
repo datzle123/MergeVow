@@ -6,7 +6,7 @@ Date: 2026-07-18
 ## Decision
 
 Launch with deterministic, loginless Chromium flows. Keep the internal contract model adaptable but
-do not ship behavior-contract adapters for HTTP services or command processes in V0. StillWorks' own
+do not ship behavior-contract adapters for HTTP services or command processes in V0. MergeVow's own
 command-line client remains in scope.
 
 ## Why

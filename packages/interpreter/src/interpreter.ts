@@ -1,4 +1,4 @@
-import { type ContractStep, validateContract } from "@stillworks/contract";
+import { type ContractStep, validateContract } from "@mergevow/contract";
 
 import { dispatchStep } from "./dispatch.js";
 import {

@@ -1,8 +1,8 @@
 {
-  "name": "@stillworks/contract",
+  "name": "@mergevow/contract",
   "version": "0.0.0",
   "private": true,
-  "description": "Data-only behavior contracts for StillWorks.",
+  "description": "Data-only behavior contracts for MergeVow.",
   "license": "MIT",
   "type": "module",
   "sideEffects": false,

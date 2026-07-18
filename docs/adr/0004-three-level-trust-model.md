@@ -11,7 +11,7 @@ overstate V0 security.
 
 ## Decision
 
-StillWorks exposes three distinct levels:
+MergeVow exposes three distinct levels:
 
 1. **Local Cooperative:** the current user chooses both app and local contract; no approval or
    tamper-resistance claim is made.

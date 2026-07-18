@@ -1,4 +1,4 @@
-# StillWorks Agent Instructions
+# MergeVow Agent Instructions
 
 ## Read First
 
@@ -7,14 +7,14 @@ Before changing code or architecture:
 1. Read `PROJECT_PLAN.md`.
 2. Read `docs/PRODUCT_CHARTER.md` and `docs/THREAT_MODEL.md`.
 3. Find the active `SW-*` item in `docs/BACKLOG.md`.
-4. Use the `build-stillworks` skill when it is available.
+4. Use the `build-mergevow` skill when it is available.
 
 ## Current State
 
 The repository is prepared and `SW-001` through `SW-006` are complete. `SW-007` is the next issue.
 Do not create broad framework code ahead of the active issue. The first
 vertical slice must precede recorder polish, GitHub App work, dashboards, HTTP-service or
-command-process contract targets, or MCP integration. This does not exclude StillWorks' own CLI.
+command-process contract targets, or MCP integration. This does not exclude MergeVow's own CLI.
 
 ## Invariants
 
@@ -42,6 +42,6 @@ command-process contract targets, or MCP integration. This does not exclude Stil
 
 ## Scope Guard
 
-Do not add another boundary until StillWorks has at least 10 weekly-active browser repositories and
+Do not add another boundary until MergeVow has at least 10 weekly-active browser repositories and
 three organic adapter requests. Do not implement protected GitHub enforcement before authoring and
 replay reliability have passed their gates.

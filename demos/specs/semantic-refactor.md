@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Show that StillWorks is not a DOM-shape or pixel snapshot tool.
+Show that MergeVow is not a DOM-shape or pixel snapshot tool.
 
 ## Change
 

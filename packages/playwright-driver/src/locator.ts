@@ -3,7 +3,7 @@ import type {
   LabelLocator,
   RoleLocator,
   TestIdLocator,
-} from "@stillworks/contract";
+} from "@mergevow/contract";
 import type { Page, Locator as PlaywrightLocator } from "playwright";
 
 export const LOCATOR_RESOLUTION_CODES = {

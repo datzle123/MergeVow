@@ -1,12 +1,12 @@
-# StillWorks
+# MergeVow
 
 **Show it once. Keep it working.**
 
-[![Repository CI](https://github.com/datzle123/StillWorks/actions/workflows/ci.yml/badge.svg)](https://github.com/datzle123/StillWorks/actions/workflows/ci.yml)
+[![Repository CI](https://github.com/datzle123/MergeVow/actions/workflows/ci.yml/badge.svg)](https://github.com/datzle123/MergeVow/actions/workflows/ci.yml)
 [![MIT License](https://img.shields.io/badge/license-MIT-2ea44f.svg)](LICENSE)
 [![TypeScript strict](https://img.shields.io/badge/TypeScript-strict-3178c6.svg)](tsconfig.base.json)
 
-StillWorks is being built as an open-source tool for human-owned behavior contracts in CI. The V0
+MergeVow is being built as an open-source tool for human-owned behavior contracts in CI. The V0
 goal is simple: demonstrate a critical browser flow, select the semantic outcomes that matter, and
 check candidate code with a selected local contract or a base-selected PR oracle.
 
@@ -24,7 +24,10 @@ same-origin browser guard are complete. Browser action replay has not shipped.**
 
 The repository contains the product charter, threat model, execution plan, validation kit, demo
 specifications, development toolchain, Codex skill, and three tested product packages:
-`@stillworks/contract`, `@stillworks/playwright-driver`, and `@stillworks/interpreter`.
+`@mergevow/contract`, `@mergevow/playwright-driver`, and `@mergevow/interpreter`.
+
+Those are prospective workspace package identities. The `@mergevow` npm scope and `mergevow` CLI
+package are not reserved or published yet.
 
 ## Working Today
 
@@ -43,7 +46,7 @@ The contract kernel already provides:
 Workspace API today (the package is not published to npm yet):
 
 ```ts
-import { hashContract, parseContract } from "@stillworks/contract";
+import { hashContract, parseContract } from "@mergevow/contract";
 
 const parsed = parseContract(`{
   "version": 1,
@@ -103,7 +106,7 @@ semantic locators. Screenshots and traces are sensitive evidence, not the oracle
 - Arbitrary JavaScript, shell, imports, callbacks, XPath, arbitrary CSS selectors, or executable
   regex in contracts.
 - AI self-healing or automatic contract approval.
-- HTTP-service or command-process behavior contracts. StillWorks' own `init`, `record`, `check`, and
+- HTTP-service or command-process behavior contracts. MergeVow's own `init`, `record`, `check`, and
   `diff` CLI remains in scope.
 - A hosted dashboard, IDE extension, or MCP integration.
 - A security sandbox, hostile-candidate isolation, or defense against an app deliberately detecting
@@ -115,5 +118,5 @@ semantic locators. Screenshots and traces are sensitive evidence, not the oracle
 
 </details>
 
-See [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md) for the guarantees StillWorks does and does not
+See [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md) for the guarantees MergeVow does and does not
 make.

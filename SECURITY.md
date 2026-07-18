@@ -1,6 +1,6 @@
 # Security Policy
 
-StillWorks will execute candidate application code and process browser evidence. Treat security
+MergeVow will execute candidate application code and process browser evidence. Treat security
 reports involving token exposure, secret capture, path traversal, report injection, contract parser
 abuse, or CI privilege escalation as high priority.
 

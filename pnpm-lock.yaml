@@ -47,13 +47,13 @@ importers:
 
   packages/interpreter:
     dependencies:
-      '@stillworks/contract':
+      '@mergevow/contract':
         specifier: workspace:*
         version: link:../contract
 
   packages/playwright-driver:
     dependencies:
-      '@stillworks/contract':
+      '@mergevow/contract':
         specifier: workspace:*
         version: link:../contract
       playwright:

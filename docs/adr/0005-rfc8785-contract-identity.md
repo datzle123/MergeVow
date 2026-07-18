@@ -11,7 +11,7 @@ Windows, macOS, and Linux.
 
 ## Decision
 
-StillWorks validates Contract V1 before identity work, then:
+MergeVow validates Contract V1 before identity work, then:
 
 1. Serializes it with the JSON Canonicalization Scheme from
    [RFC 8785](https://www.rfc-editor.org/rfc/rfc8785).
@@ -23,14 +23,14 @@ The implementation uses the exact-pinned `canonicalize` package and golden vecto
 non-JSON values, invalid Unicode, unknown fields, and schema-invalid contracts fail before
 canonicalization.
 
-StillWorks never canonicalizes a caller-owned live object. Validation first screens the input,
+MergeVow never canonicalizes a caller-owned live object. Validation first screens the input,
 creates a detached snapshot that rejects dynamic `Proxy` values, masks inherited serialization
 hooks, removes object prototypes while evaluating the own-property-only schema, and validates that
 exact snapshot. Canonicalization masks serialization hooks again, emits RFC 8785 JSON, and validates
 the exact emitted bytes. The returned contract is the deeply frozen parsed form of those bytes, so
 it cannot diverge from its identity through caller mutation.
 
-Unicode strings are preserved byte-for-byte after JSON decoding. StillWorks does not silently apply
+Unicode strings are preserved byte-for-byte after JSON decoding. MergeVow does not silently apply
 Unicode normalization, so canonically equivalent but code-point-distinct strings have different
 identities.
 

@@ -1,6 +1,6 @@
-# @stillworks/interpreter
+# @mergevow/interpreter
 
-Workspace-only deterministic Contract V1 state machine for StillWorks.
+Workspace-only deterministic Contract V1 state machine for MergeVow.
 
 ## Boundary
 

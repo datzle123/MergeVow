@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://stillworks.dev/schema/contract-v1.schema.json",
-  "title": "StillWorks Contract V1",
+  "$id": "https://github.com/datzle123/MergeVow/blob/main/packages/contract/schema/contract-v1.schema.json",
+  "title": "MergeVow Contract V1",
   "description": "A closed, data-only browser behavior contract.",
   "type": "object",
   "additionalProperties": false,
