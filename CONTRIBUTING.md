@@ -1,6 +1,7 @@
 # Contributing
 
-StillWorks is in preparation. Contributions should begin from an approved `SW-*` backlog item.
+StillWorks is in early implementation. Contributions should begin from an approved `SW-*` backlog
+item.
 
 ## Development
 

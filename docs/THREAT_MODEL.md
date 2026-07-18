@@ -14,6 +14,8 @@ ADRs, issues, and implementation must not promise more than the guarantees below
   of explicit human approval.
 - **Proposed bundle:** the candidate/head version of any governed contract or config. V0 reports it
   but never uses it as the active PR oracle.
+- **Canonical contract hash:** SHA-256 of the validated RFC 8785 canonical Contract V1 JSON, written
+  as `sha256:<lowercase hex>`.
 - **Attested bundle:** a proposed bundle explicitly approved by an authorized maintainer through
   Protected Attestation.
 - **Oracle:** the accepted base bundle plus the immutable runner and policy semantics used to produce

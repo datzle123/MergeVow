@@ -3,9 +3,15 @@ import { type JSONPath, printParseErrorCode, visit } from "jsonc-parser";
 
 import { CONTRACT_LIMITS } from "./limits.js";
 import { contractV1Schema } from "./schema.js";
+import {
+  detachJsonValue,
+  withObjectPrototypesMasked,
+  withSerializationHooksMasked,
+} from "./snapshot.js";
 import type { ContractV1 } from "./types.js";
 
 export const CONTRACT_ISSUE_CODES = {
+  canonicalizationFailed: "CANONICALIZATION_FAILED",
   dangerousKey: "DANGEROUS_KEY",
   duplicateKey: "DUPLICATE_KEY",
   invalidEncoding: "INVALID_ENCODING",
@@ -42,6 +48,7 @@ const ajv = new Ajv2020({
   allErrors: true,
   coerceTypes: false,
   messages: true,
+  ownProperties: true,
   removeAdditional: false,
   strict: true,
   useDefaults: false,
@@ -266,6 +273,9 @@ function inspectJsonTree(root: unknown): ContractValidationIssue | undefined {
         if (!("value" in descriptor)) {
           return invalidJsonValue(keyPath, "Accessor properties are not valid JSON data.");
         }
+        if (!descriptor.enumerable) {
+          return invalidJsonValue(keyPath, "Non-enumerable properties are not valid JSON data.");
+        }
         pending.push({
           depth: current.depth + 1,
           path: keyPath,
@@ -304,9 +314,23 @@ export function validateContract(value: unknown): ContractValidationResult {
     return failure(treeIssue);
   }
 
+  const detached = detachJsonValue(value);
+  if (!detached.ok) {
+    return failure(
+      invalidJsonValue("", "The contract could not be detached into inert JSON data."),
+    );
+  }
+
+  const snapshotIssue = inspectJsonTree(detached.value);
+  if (snapshotIssue !== undefined) {
+    return failure(snapshotIssue);
+  }
+
   let serialized: string;
   try {
-    const result = JSON.stringify(value);
+    const result = withObjectPrototypesMasked(detached.value, () =>
+      withSerializationHooksMasked(detached.value, () => JSON.stringify(detached.value)),
+    );
     if (result === undefined) {
       return failure(invalidJsonValue("", "The contract is not serializable JSON data."));
     }
@@ -323,11 +347,21 @@ export function validateContract(value: unknown): ContractValidationResult {
     });
   }
 
-  if (!validateSchema(value)) {
-    return { issues: schemaIssues(validateSchema.errors), ok: false };
+  let validationIssues: ContractValidationIssue[] | undefined;
+  try {
+    validationIssues = withObjectPrototypesMasked(detached.value, () =>
+      validateSchema(detached.value) ? undefined : schemaIssues(validateSchema.errors),
+    );
+  } catch {
+    return failure(
+      invalidJsonValue("", "The detached contract could not be evaluated against schema v1."),
+    );
+  }
+  if (validationIssues !== undefined) {
+    return { issues: validationIssues, ok: false };
   }
 
-  return { ok: true, value: value as ContractV1 };
+  return { ok: true, value: detached.value as ContractV1 };
 }
 
 export function parseContract(source: string | Uint8Array): ContractValidationResult {

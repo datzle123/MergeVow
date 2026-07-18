@@ -1,3 +1,12 @@
+export {
+  type CanonicalContract,
+  type CanonicalContractResult,
+  type ContractHash,
+  canonicalizeContract,
+  type HashContractResult,
+  type HashedContract,
+  hashContract,
+} from "./canonical.js";
 export { CONTRACT_LIMITS } from "./limits.js";
 export { CONTRACT_V1_SCHEMA_ID, contractV1Schema } from "./schema.js";
 export {
