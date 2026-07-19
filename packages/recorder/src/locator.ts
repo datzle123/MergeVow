@@ -1,8 +1,12 @@
 import type { Locator } from "@mergevow/contract";
-import { resolveUniqueLocator } from "@mergevow/playwright-driver";
+import { inspectLocatorMatches, resolveUniqueLocator } from "@mergevow/playwright-driver";
 import type { Page } from "playwright";
 
-import type { BrowserActionEvent, BrowserLocatorCandidate } from "./types.js";
+import type {
+  BrowserActionEvent,
+  BrowserAssertionEvent,
+  BrowserLocatorCandidate,
+} from "./types.js";
 
 const LIVE_REVALIDATION_TIMEOUT_MS = 250;
 
@@ -110,4 +114,62 @@ export async function selectCapturedLocator(
   return eventTimeCandidate === undefined
     ? Object.freeze({ ambiguous, ok: false })
     : Object.freeze({ locator: eventTimeCandidate.locator, ok: true });
+}
+
+export async function selectExplicitCapturedLocator(
+  page: Page,
+  event: BrowserAssertionEvent,
+  stateName: string,
+  includeHidden: boolean,
+): Promise<LocatorSelectionResult> {
+  const locator = event.locator;
+  const candidate =
+    locator === undefined
+      ? undefined
+      : event.candidates?.find((entry) => locatorKey(entry.locator) === locatorKey(locator));
+  if (locator === undefined || candidate?.matches !== 1) {
+    return Object.freeze({ ambiguous: (candidate?.matches ?? 0) > 1, ok: false });
+  }
+
+  const currentDocumentToken = await documentToken(page, stateName);
+  if (currentDocumentToken !== undefined && currentDocumentToken !== event.documentToken) {
+    return Object.freeze({ locator, ok: true });
+  }
+
+  try {
+    const resolution = await resolveUniqueLocator(page, locator, { includeHidden });
+    if (resolution.ok) return Object.freeze({ locator, ok: true });
+    return Object.freeze({
+      ambiguous: resolution.issues.some((entry) => entry.matchCount > 1),
+      ok: false,
+    });
+  } catch {
+    const tokenAfterFailure = await documentToken(page, stateName);
+    if (tokenAfterFailure !== undefined && tokenAfterFailure !== event.documentToken) {
+      return Object.freeze({ locator, ok: true });
+    }
+  }
+
+  return Object.freeze({ ambiguous: false, ok: false });
+}
+
+export async function validateCapturedCount(
+  page: Page,
+  event: BrowserAssertionEvent,
+  stateName: string,
+): Promise<boolean> {
+  const locator = event.locator;
+  const expected = event.expected;
+  if (locator === undefined || typeof expected !== "number") return false;
+
+  const currentDocumentToken = await documentToken(page, stateName);
+  if (currentDocumentToken !== undefined && currentDocumentToken !== event.documentToken)
+    return true;
+
+  try {
+    return (await inspectLocatorMatches(page, locator)).matchCount === expected;
+  } catch {
+    const tokenAfterFailure = await documentToken(page, stateName);
+    return tokenAfterFailure !== undefined && tokenAfterFailure !== event.documentToken;
+  }
 }

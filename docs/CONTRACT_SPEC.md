@@ -130,11 +130,39 @@ events fail closed. Startup rejects with one typed bounded issue; session shutdo
 complete deeply frozen value that passes this specification's validator or one issue with no partial
 contract.
 
-Recorder instrumentation is cooperative local authoring, not hostile-page isolation. Passwords are
-rejected before reading their value, and contracts have no fields for cookies, authorization
-headers, raw request/response bodies, local/session storage, or storage state. The guarded driver
-still relays same-origin headers and bodies; URL, locator, and value text derived from the page can
-contain sensitive data. Broader content redaction is specified separately in `SW-010`.
+Recorder instrumentation is cooperative local authoring, not hostile-page isolation. Direct
+password controls are rejected before candidate computation, and semantic-name candidates whose
+bounded dependency graph reaches a password control are omitted before accessible-name computation.
+Contracts have no fields for cookies, authorization headers, raw request/response bodies,
+local/session storage, or storage state. The guarded driver still relays same-origin headers and
+bodies; URL, locator, and value text derived from the page can contain sensitive data. Broader
+content redaction is specified separately in `SW-010`.
+
+## Recorder Checkpoint Overlay
+
+With the opt-in checkpoint overlay enabled, each recorder document mounts an isolated Shadow DOM tool
+surface. It offers only the eight assertion opcodes defined below. A confirmed assertion uses the
+same bounded binding and serialized queue as recorded actions; pending fill is flushed first, so the
+final contract preserves the user's source order.
+
+Visible targets are captured from one explicit pointer gesture without invoking the application's
+target action. Hidden targets come from a bounded semantic candidate list. Visible, hidden, text,
+value, checked, and disabled assertions require one event-time exact semantic match. Count may retain
+one approved non-unique locator and its observed count. URL records the exact current pathname,
+search, and hash after verifying the recorder origin. Confirmation re-captures the selected target
+and invalidates missing, newly ambiguous, changed-state, changed-count, or changed-URL selections.
+
+The picker owns pointer-down, pointer-up, and the terminal click for its one selected gesture. It
+collapses the full panel while active; keyboard activation instead exposes a bounded semantic target
+list and the dialog contains focus. Overlay-control events are stopped before they bubble out of the
+Shadow DOM. Because the authoring surface runs in the application page, capture-phase page listeners
+can still observe or interfere with it under the Local Cooperative boundary.
+
+The overlay is reinjected after document navigation and removed on recorder cleanup. Cancel, invalid
+target/mode combinations, missing semantics, and ambiguity append no assertion. Malformed events,
+resource exhaustion, and final validation failure remain fail-closed. Shadow DOM isolation prevents
+ordinary application styles and recorder scans from consuming overlay controls; it is not a hostile
+page or human-attestation boundary. Page-derived assertion data remains in SW-010 redaction scope.
 
 ## Assertions
 

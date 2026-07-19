@@ -2,8 +2,8 @@
 
 MergeVow is in implementation. The contract kernel, strict semantic locator resolver,
 deterministic interpreter, guarded real-browser driver, readiness probe, and handwritten persistence
-vertical slice are built and tested. Guarded recorder action capture is built; checkpoint UI and CLI
-acquisition are not built yet.
+vertical slice are built and tested. Guarded recorder action capture and checkpoint selection are
+built; configured redaction and CLI acquisition are not built yet.
 
 ## Locked Decisions
 
@@ -44,12 +44,18 @@ acquisition are not built yet.
 - Interpreter typecheck, clean build, package dry-run, and built-ESM state-machine smoke
 - `@mergevow/demo-todo-persistence`: 3 vertical-slice/report cases plus a runnable
   `PASS / PASS / REGRESSION` demo using fresh contexts
-- `@mergevow/recorder`: 31 real-Chromium cases covering all six actions, semantic refactors,
-  standards-based accessible names, shadow DOM, mutation-safe locator proof, identity-based fill
+- `@mergevow/recorder`: 50 real-Chromium cases covering all six actions and eight assertions,
+  action/assertion ordering, Shadow DOM UI isolation, pointer and keyboard target selection,
+  collapsed picker ergonomics, hidden/count selection, live confirmation, cancellation,
+  navigation reinjection, replay-equivalent visibility/ARIA state, safe keyboard discovery,
+  semantic refactors, standards-based accessible names, shadow DOM, mutation-safe locator proof,
+  identity-based fill
   coalescing, causal navigation, GET/POST submit handling, record/replay, ambiguity,
   sensitive/unsupported controls, typed startup, guard/topology/transport failure, resource bounds,
   and fresh state isolation
-- Full pinned Chromium headed launch/capture smoke; CI retains the matching headless shell path
+- Full pinned Chromium headed launch/capture smoke with `RECORDER_CHROMIUM_LAUNCH_ARGS` and a clean
+  recorder-context guard; browser-profile traffic remains outside the documented process-wide
+  boundary, while CI retains the matching headless shell path
 - Source and built JSON Schema SHA-256 equality
 - Chromium launch and semantic heading lookup
 - All project-relative Markdown links
@@ -74,5 +80,5 @@ These require the owner's accounts or identity and were intentionally not guesse
 
 ## Next Action
 
-`SW-001` through `SW-008` are complete. Open `docs/BACKLOG.md` and start `SW-009` while keeping action
-capture and the handwritten vertical slice as acceptance oracles.
+`SW-001` through `SW-009` are complete. Open `docs/BACKLOG.md` and start `SW-010` while keeping
+action/checkpoint capture and the handwritten vertical slice as acceptance oracles.
