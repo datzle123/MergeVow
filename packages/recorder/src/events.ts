@@ -2,6 +2,7 @@ import { ARIA_ROLES, type AriaRole, CONTRACT_LIMITS, type Locator } from "@merge
 
 import {
   type BrowserActionEvent,
+  type BrowserAssertionEvent,
   type BrowserLocatorCandidate,
   type BrowserNavigationEvent,
   type BrowserNavigationIntentEvent,
@@ -12,6 +13,16 @@ import {
 
 const ariaRoles = new Set<string>(ARIA_ROLES);
 const actionKinds = new Set(["check", "click", "fill", "select"]);
+const assertionKinds = new Set([
+  "checked",
+  "count",
+  "disabled",
+  "hidden",
+  "text",
+  "url",
+  "value",
+  "visible",
+]);
 const rejectedKinds = new Set([
   "eventLimit",
   "pageLimit",
@@ -126,6 +137,85 @@ function parseAction(value: Record<string, unknown>): BrowserActionEvent | undef
   });
 }
 
+function parseAssertion(value: Record<string, unknown>): BrowserAssertionEvent | undefined {
+  if (
+    !hasOnlyKeys(value, [
+      "assertionKind",
+      "candidates",
+      "documentToken",
+      "expected",
+      "kind",
+      "locator",
+      "origin",
+      "path",
+    ]) ||
+    value.kind !== "assertion" ||
+    !assertionKinds.has(value.assertionKind as string)
+  ) {
+    return undefined;
+  }
+  const assertionKind = value.assertionKind as BrowserAssertionEvent["assertionKind"];
+  const documentToken = boundedString(value.documentToken, RECORDER_LIMITS.maxMarkerLength);
+  if (documentToken === undefined) return undefined;
+  if (assertionKind === "url") {
+    const origin = boundedString(value.origin, CONTRACT_LIMITS.maxUrlLength);
+    const path = boundedString(value.path, CONTRACT_LIMITS.maxUrlLength);
+    if (
+      origin === undefined ||
+      path === undefined ||
+      value.candidates !== undefined ||
+      value.expected !== undefined ||
+      value.locator !== undefined
+    ) {
+      return undefined;
+    }
+    return Object.freeze({ assertionKind, documentToken, kind: "assertion", origin, path });
+  }
+  if (
+    !Array.isArray(value.candidates) ||
+    value.candidates.length > RECORDER_LIMITS.maxCandidatesPerEvent
+  ) {
+    return undefined;
+  }
+  const candidates = value.candidates.map(parseCandidate);
+  const locator = parseLocator(value.locator);
+  if (
+    locator === undefined ||
+    candidates.some((candidate) => candidate === undefined) ||
+    value.origin !== undefined ||
+    value.path !== undefined
+  ) {
+    return undefined;
+  }
+  let expected: boolean | number | string | undefined;
+  if (assertionKind === "text" || assertionKind === "value") {
+    expected = boundedString(value.expected, CONTRACT_LIMITS.maxValueLength, true);
+    if (expected === undefined) return undefined;
+  } else if (assertionKind === "checked" || assertionKind === "disabled") {
+    if (typeof value.expected !== "boolean") return undefined;
+    expected = value.expected;
+  } else if (assertionKind === "count") {
+    if (
+      !Number.isSafeInteger(value.expected) ||
+      (value.expected as number) < 0 ||
+      (value.expected as number) > RECORDER_LIMITS.maxElementsScanned
+    ) {
+      return undefined;
+    }
+    expected = value.expected as number;
+  } else if (value.expected !== undefined) {
+    return undefined;
+  }
+  return Object.freeze({
+    assertionKind,
+    candidates: Object.freeze(candidates as BrowserLocatorCandidate[]),
+    documentToken,
+    ...(expected === undefined ? {} : { expected }),
+    kind: "assertion",
+    locator,
+  });
+}
+
 function parseNavigation(value: Record<string, unknown>): BrowserNavigationEvent | undefined {
   if (
     !hasOnlyKeys(value, [
@@ -196,6 +286,7 @@ export function parseBrowserRecorderEvent(value: unknown): BrowserRecorderEvent 
   const candidate = record(value);
   if (candidate === undefined || typeof candidate.kind !== "string") return undefined;
   if (actionKinds.has(candidate.kind)) return parseAction(candidate);
+  if (candidate.kind === "assertion") return parseAssertion(candidate);
   if (candidate.kind === "navigation") return parseNavigation(candidate);
   if (candidate.kind === "navigationIntent") return parseNavigationIntent(candidate);
   if (rejectedKinds.has(candidate.kind)) return parseRejected(candidate);

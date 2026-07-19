@@ -1,7 +1,7 @@
 import { type ContractV1, validateContract } from "@mergevow/contract";
 import { EXECUTION_VERDICTS, runContract } from "@mergevow/interpreter";
 import { createGuardedBrowserContext, createPlaywrightDriver } from "@mergevow/playwright-driver";
-import type { Browser } from "playwright";
+import type { Browser, Locator as PlaywrightLocator } from "playwright";
 import { chromium } from "playwright";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 
@@ -9,6 +9,7 @@ import {
   type ActionRecorderResult,
   type ActionRecorderSession,
   ActionRecorderStartError,
+  RECORDER_CHROMIUM_LAUNCH_ARGS,
   RECORDER_ISSUE_CODES,
   startActionRecorder,
 } from "../src/index.js";
@@ -53,6 +54,75 @@ describe("guarded Contract V1 action recorder", () => {
               : html(`
                   <label for="project">Project</label><input id="project">
                   <button>Save</button>`),
+          );
+          return;
+        case "/overlay":
+          response.end(
+            html(
+              `
+              <h1>Dashboard   Ready</h1>
+              <label for="account-name">Account name</label><input id="account-name" value="Ada">
+              <label><input type="checkbox" checked>Subscribed</label>
+              <button disabled>Archive</button>
+              <section aria-label="Items"><button>Entry</button><button>Entry</button></section>
+              <div role="status" aria-label="Syncing" data-testid="hidden-panel" style="display:none">Hidden panel</div>
+              <button data-testid="covered-action" style="position:fixed;right:40px;bottom:260px" onclick="globalThis.coveredActionCount=(globalThis.coveredActionCount ?? 0)+1">Covered target</button>
+              <button data-testid="app-action" onclick="globalThis.appActionCount=(globalThis.appActionCount ?? 0)+1;document.querySelector('h1').textContent='Dashboard Changed'">Run action</button>`,
+              `<script>
+                document.addEventListener("click", () => {
+                  globalThis.appDocumentClickCount = (globalThis.appDocumentClickCount ?? 0) + 1;
+                });
+                document.querySelector('[data-testid="app-action"]').addEventListener("pointerup", () => {
+                  globalThis.appPointerUpCount = (globalThis.appPointerUpCount ?? 0) + 1;
+                });
+              </script>`,
+            ),
+          );
+          return;
+        case "/overlay-inherited-disabled":
+          response.end(
+            html(
+              '<div role="checkbox" aria-checked="true">ARIA subscribed</div><div aria-disabled="true"><button>Inherited archive</button></div>',
+            ),
+          );
+          return;
+        case "/overlay-disabled-roles":
+          response.end(
+            html(`
+              <div role="group" aria-label="Controls" aria-disabled="true">Controls</div>
+              <div role="composite" aria-disabled="true" data-testid="abstract-composite">Composite</div>
+              <div role="input" aria-disabled="true" data-testid="abstract-input">Input</div>
+              <div role="select" aria-disabled="true" data-testid="abstract-select">Select</div>`),
+          );
+          return;
+        case "/overlay-sensitive-discovery":
+          response.end(
+            html(
+              `<div role="button">Submit <label>Password <input id="sensitive-name-password" type="password" role="textbox" value="never-list-this"></label></div>
+              <label>Attachment <input type="file"></label><label>Name <input value="Ada"></label>`,
+              `<script>
+                globalThis.passwordValueReads = 0;
+                const password = document.querySelector('#sensitive-name-password');
+                const valueDescriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+                Object.defineProperty(password, 'value', {
+                  configurable: true,
+                  get() {
+                    globalThis.passwordValueReads += 1;
+                    return valueDescriptor.get.call(this);
+                  },
+                  set(value) {
+                    valueDescriptor.set.call(this, value);
+                  },
+                });
+              </script>`,
+            ),
+          );
+          return;
+        case "/overlay-display-contents":
+          response.end(
+            html(
+              '<div role="button" aria-label="Contents action" style="display:contents"><span>Visible content</span></div>',
+            ),
           );
           return;
         case "/ambiguous":
@@ -278,8 +348,18 @@ describe("guarded Contract V1 action recorder", () => {
     await Promise.all([allowed.close(), external.close()]);
   });
 
-  async function start(startPath: string, flow = "record-actions"): Promise<ActionRecorderSession> {
-    session = await startActionRecorder({ browser, flow, origin: allowed.origin, startPath });
+  async function start(
+    startPath: string,
+    flow = "record-actions",
+    checkpointOverlay = false,
+  ): Promise<ActionRecorderSession> {
+    session = await startActionRecorder({
+      browser,
+      ...(checkpointOverlay ? { checkpointOverlay: true } : {}),
+      flow,
+      origin: allowed.origin,
+      startPath,
+    });
     return session;
   }
 
@@ -307,6 +387,76 @@ describe("guarded Contract V1 action recorder", () => {
       await replayContext.close();
     }
   }
+
+  async function openCheckpoint(
+    current: ActionRecorderSession,
+    kind: "checked" | "count" | "disabled" | "hidden" | "text" | "url" | "value" | "visible",
+  ): Promise<void> {
+    await current.page.getByTestId("mergevow-checkpoint-trigger").click();
+    await current.page.getByTestId(`mergevow-checkpoint-kind-${kind}`).click();
+  }
+
+  async function addPickedCheckpoint(
+    current: ActionRecorderSession,
+    kind: "checked" | "count" | "disabled" | "text" | "value" | "visible",
+    target: PlaywrightLocator,
+    force = false,
+  ): Promise<void> {
+    await openCheckpoint(current, kind);
+    await current.page.getByTestId("mergevow-checkpoint-pick").click();
+    await target.click({ force });
+    const confirm = current.page.getByTestId("mergevow-checkpoint-confirm");
+    await expect.poll(() => confirm.isEnabled()).toBe(true);
+    await confirm.click();
+  }
+
+  async function addHiddenCheckpoint(
+    current: ActionRecorderSession,
+    targetLabel: string,
+  ): Promise<void> {
+    await openCheckpoint(current, "hidden");
+    await current.page.getByTestId("mergevow-checkpoint-pick").click();
+    await current.page
+      .getByTestId("mergevow-checkpoint-target")
+      .filter({ hasText: targetLabel })
+      .click();
+    await current.page.getByTestId("mergevow-checkpoint-confirm").click();
+  }
+
+  async function addUrlCheckpoint(current: ActionRecorderSession): Promise<void> {
+    await openCheckpoint(current, "url");
+    await current.page.getByTestId("mergevow-checkpoint-confirm").click();
+  }
+
+  it("preserves the pinned Playwright Chromium feature policy in headed launch args", () => {
+    const disabledFeatures = RECORDER_CHROMIUM_LAUNCH_ARGS[0]
+      ?.replace("--disable-features=", "")
+      .split(",");
+    expect(disabledFeatures).toEqual([
+      "AvoidUnnecessaryBeforeUnloadCheckSync",
+      "BoundaryEventDispatchTracksNodeRemoval",
+      "DestroyProfileOnBrowserClose",
+      "DialMediaRouteProvider",
+      "GlobalMediaControls",
+      "HttpsUpgrades",
+      "LensOverlay",
+      "MediaRouter",
+      "PaintHolding",
+      "ThirdPartyStoragePartitioning",
+      "Translate",
+      "AutoDeElevate",
+      "RenderDocument",
+      "OptimizationHints",
+      "msForceBrowserSignIn",
+      "msEdgeUpdateLaunchServicesPreferredVersion",
+      "PreconnectToSearch",
+      "AimServerRequestOnStartupEnabled",
+      "AutofillServerCommunication",
+      "NetworkTimeServiceQuerying",
+    ]);
+    expect(RECORDER_CHROMIUM_LAUNCH_ARGS).toHaveLength(1);
+    expect(Object.isFrozen(RECORDER_CHROMIUM_LAUNCH_ARGS)).toBe(true);
+  });
 
   it("captures all six approved actions in source order as a frozen valid contract", async () => {
     const current = await start("/form");
@@ -363,6 +513,594 @@ describe("guarded Contract V1 action recorder", () => {
     } finally {
       await replayContext.close();
     }
+  });
+
+  it("captures all eight checkpoint opcodes in source order and replays them", async () => {
+    const current = await start("/overlay", "overlay-all-assertions", true);
+    await addUrlCheckpoint(current);
+    const heading = current.page.getByRole("heading", { name: "Dashboard Ready" });
+    await addPickedCheckpoint(current, "visible", heading);
+    await addPickedCheckpoint(current, "text", heading);
+    await addPickedCheckpoint(current, "value", current.page.getByLabel("Account name"));
+    await current.page.getByLabel("Account name").fill("Grace");
+    await addPickedCheckpoint(current, "checked", current.page.getByLabel("Subscribed"));
+    await addPickedCheckpoint(
+      current,
+      "disabled",
+      current.page.getByRole("button", { name: "Archive" }),
+      true,
+    );
+    await addPickedCheckpoint(
+      current,
+      "count",
+      current.page.getByRole("button", { name: "Entry" }).first(),
+    );
+    await addHiddenCheckpoint(current, "Test ID: hidden-panel");
+    await current.page.getByTestId("app-action").click();
+
+    const result = await current.stop();
+    expect(result).toEqual({
+      contract: {
+        flow: "overlay-all-assertions",
+        steps: [
+          { visit: "/overlay" },
+          { assertUrl: "/overlay" },
+          { assertVisible: { name: "Dashboard Ready", role: "heading" } },
+          {
+            assertText: {
+              equals: "Dashboard Ready",
+              locator: { name: "Dashboard Ready", role: "heading" },
+            },
+          },
+          { assertValue: { equals: "Ada", locator: { label: "Account name" } } },
+          { fill: { locator: { label: "Account name" }, value: "Grace" } },
+          { assertChecked: { equals: true, locator: { label: "Subscribed" } } },
+          {
+            assertDisabled: {
+              equals: true,
+              locator: { name: "Archive", role: "button" },
+            },
+          },
+          {
+            assertCount: {
+              equals: 2,
+              locator: { name: "Entry", role: "button" },
+            },
+          },
+          { assertHidden: { name: "Syncing", role: "status" } },
+          { click: { name: "Run action", role: "button" } },
+        ],
+        version: 1,
+      },
+      ok: true,
+    });
+    if (!result.ok) throw new Error("Expected checkpoint recording.");
+    expect(validateContract(result.contract).ok).toBe(true);
+    expect(Object.isFrozen(result.contract)).toBe(true);
+    await expect(replayContract(result.contract)).resolves.toMatchObject({
+      executionVerdict: EXECUTION_VERDICTS.pass,
+    });
+  });
+
+  it("consumes only picker gestures and emits nothing for cancel or invalid selection", async () => {
+    const current = await start("/overlay", "overlay-isolation", true);
+    const appAction = current.page.getByTestId("app-action");
+    await openCheckpoint(current, "visible");
+    await current.page.getByTestId("mergevow-checkpoint-pick").click();
+    const box = await appAction.boundingBox();
+    if (box === null) throw new Error("Missing app-action bounds.");
+    await current.page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await current.page.mouse.down();
+    await current.page.waitForTimeout(100);
+    await current.page.mouse.up();
+    await current.page.getByTestId("mergevow-checkpoint-confirm").click();
+    await expect
+      .poll(() => current.page.getByTestId("mergevow-checkpoint-toast").isVisible())
+      .toBe(true);
+    expect(
+      await appAction.evaluate((element) =>
+        element.getAttributeNames().filter((name) => name.startsWith("data-mergevow-recorder-")),
+      ),
+    ).toEqual([]);
+    expect(
+      await current.page.evaluate(
+        () =>
+          (globalThis as typeof globalThis & { readonly appActionCount?: number }).appActionCount ??
+          0,
+      ),
+    ).toBe(0);
+    expect(
+      await current.page.evaluate(
+        () =>
+          (globalThis as typeof globalThis & { readonly appPointerUpCount?: number })
+            .appPointerUpCount ?? 0,
+      ),
+    ).toBe(0);
+
+    await openCheckpoint(current, "value");
+    await current.page.getByTestId("mergevow-checkpoint-pick").click();
+    await current.page.getByRole("heading", { name: "Dashboard Ready" }).click();
+    await expect
+      .poll(() => current.page.getByTestId("mergevow-checkpoint-status").textContent())
+      .toContain("Value checkpoints require");
+    await current.page.getByTestId("mergevow-checkpoint-cancel").click();
+
+    await openCheckpoint(current, "text");
+    await current.page.getByTestId("mergevow-checkpoint-pick").click();
+    await current.page.keyboard.press("Escape");
+    await current.page.getByTestId("mergevow-checkpoint-cancel").click();
+    expect(
+      await current.page.evaluate(
+        () =>
+          (globalThis as typeof globalThis & { readonly appDocumentClickCount?: number })
+            .appDocumentClickCount ?? 0,
+      ),
+    ).toBe(0);
+    await appAction.click();
+    expect(
+      await current.page.evaluate(
+        () =>
+          (globalThis as typeof globalThis & { readonly appActionCount?: number }).appActionCount ??
+          0,
+      ),
+    ).toBe(1);
+    expect(
+      await current.page.evaluate(() => ({
+        clicks:
+          (globalThis as typeof globalThis & { readonly appDocumentClickCount?: number })
+            .appDocumentClickCount ?? 0,
+        pointerUps:
+          (globalThis as typeof globalThis & { readonly appPointerUpCount?: number })
+            .appPointerUpCount ?? 0,
+      })),
+    ).toEqual({ clicks: 1, pointerUps: 1 });
+
+    await expect(current.stop()).resolves.toEqual({
+      contract: {
+        flow: "overlay-isolation",
+        steps: [
+          { visit: "/overlay" },
+          { assertVisible: { name: "Run action", role: "button" } },
+          { click: { name: "Run action", role: "button" } },
+        ],
+        version: 1,
+      },
+      ok: true,
+    });
+  });
+
+  it("captures ARIA checked and inherited disabled state with replay-equivalent semantics", async () => {
+    const current = await start("/overlay-inherited-disabled", "overlay-inherited-disabled", true);
+    await addPickedCheckpoint(
+      current,
+      "checked",
+      current.page.getByRole("checkbox", { name: "ARIA subscribed" }),
+    );
+    await addPickedCheckpoint(
+      current,
+      "disabled",
+      current.page.getByRole("button", { name: "Inherited archive" }),
+      true,
+    );
+    const result = await current.stop();
+    expect(result).toEqual({
+      contract: {
+        flow: "overlay-inherited-disabled",
+        steps: [
+          { visit: "/overlay-inherited-disabled" },
+          {
+            assertChecked: {
+              equals: true,
+              locator: { name: "ARIA subscribed", role: "checkbox" },
+            },
+          },
+          {
+            assertDisabled: {
+              equals: true,
+              locator: { name: "Inherited archive", role: "button" },
+            },
+          },
+        ],
+        version: 1,
+      },
+      ok: true,
+    });
+    if (!result.ok) throw new Error("Expected inherited disabled checkpoint recording.");
+    await expect(replayContract(result.contract)).resolves.toMatchObject({
+      executionVerdict: EXECUTION_VERDICTS.pass,
+    });
+  });
+
+  it("matches replay disabled semantics for concrete and abstract ARIA roles", async () => {
+    const current = await start("/overlay-disabled-roles", "overlay-disabled-roles", true);
+    await addPickedCheckpoint(
+      current,
+      "disabled",
+      current.page.getByRole("group", { name: "Controls" }),
+      true,
+    );
+    for (const testId of ["abstract-composite", "abstract-input", "abstract-select"]) {
+      await addPickedCheckpoint(current, "disabled", current.page.getByTestId(testId));
+    }
+    const result = await current.stop();
+    expect(result).toEqual({
+      contract: {
+        flow: "overlay-disabled-roles",
+        steps: [
+          { visit: "/overlay-disabled-roles" },
+          {
+            assertDisabled: {
+              equals: true,
+              locator: { label: "Controls" },
+            },
+          },
+          {
+            assertDisabled: {
+              equals: false,
+              locator: { testId: "abstract-composite" },
+            },
+          },
+          {
+            assertDisabled: {
+              equals: false,
+              locator: { testId: "abstract-input" },
+            },
+          },
+          {
+            assertDisabled: {
+              equals: false,
+              locator: { testId: "abstract-select" },
+            },
+          },
+        ],
+        version: 1,
+      },
+      ok: true,
+    });
+    if (!result.ok) throw new Error("Expected disabled-role checkpoint recording.");
+    await expect(replayContract(result.contract)).resolves.toMatchObject({
+      executionVerdict: EXECUTION_VERDICTS.pass,
+    });
+  });
+
+  it("omits sensitive value controls from keyboard browsing without failing the session", async () => {
+    const current = await start(
+      "/overlay-sensitive-discovery",
+      "overlay-sensitive-discovery",
+      true,
+    );
+    await openCheckpoint(current, "value");
+    const pick = current.page.getByTestId("mergevow-checkpoint-pick");
+    await pick.focus();
+    await current.page.keyboard.press("Enter");
+    const targets = current.page.getByTestId("mergevow-checkpoint-target");
+    await expect.poll(() => targets.filter({ hasText: "Label: Password" }).count()).toBe(0);
+    await expect.poll(() => targets.filter({ hasText: "Label: Attachment" }).count()).toBe(0);
+    await expect.poll(() => targets.filter({ hasText: "never-list-this" }).count()).toBe(0);
+    await targets.filter({ hasText: "Label: Name" }).click();
+    await current.page.getByTestId("mergevow-checkpoint-confirm").click();
+    await expect(
+      current.page.evaluate(
+        () =>
+          (
+            globalThis as typeof globalThis & {
+              readonly passwordValueReads?: number;
+            }
+          ).passwordValueReads ?? -1,
+      ),
+    ).resolves.toBe(0);
+
+    const result = await current.stop();
+    expect(result).toEqual({
+      contract: {
+        flow: "overlay-sensitive-discovery",
+        steps: [
+          { visit: "/overlay-sensitive-discovery" },
+          {
+            assertValue: {
+              equals: "Ada",
+              locator: { label: "Name" },
+            },
+          },
+        ],
+        version: 1,
+      },
+      ok: true,
+    });
+    expect(JSON.stringify(result)).not.toContain("never-list-this");
+  });
+
+  it("matches replay visibility semantics for display-contents targets", async () => {
+    const current = await start("/overlay-display-contents", "overlay-display-contents", true);
+    await openCheckpoint(current, "visible");
+    const pick = current.page.getByTestId("mergevow-checkpoint-pick");
+    await pick.focus();
+    await current.page.keyboard.press("Enter");
+    const displayContentsTarget = current.page
+      .getByTestId("mergevow-checkpoint-target")
+      .filter({ hasText: "Label: Contents action" });
+    await expect
+      .poll(() => current.page.getByTestId("mergevow-checkpoint-target").allTextContents())
+      .toContain("Label: Contents action");
+    await displayContentsTarget.click();
+    await current.page.getByTestId("mergevow-checkpoint-confirm").click();
+
+    const result = await current.stop();
+    expect(result).toEqual({
+      contract: {
+        flow: "overlay-display-contents",
+        steps: [
+          { visit: "/overlay-display-contents" },
+          {
+            assertVisible: { name: "Contents action", role: "button" },
+          },
+        ],
+        version: 1,
+      },
+      ok: true,
+    });
+    if (!result.ok) throw new Error("Expected display-contents checkpoint recording.");
+    await expect(replayContract(result.contract)).resolves.toMatchObject({
+      executionVerdict: EXECUTION_VERDICTS.pass,
+    });
+  });
+
+  it("supports keyboard target browsing and contains dialog focus", async () => {
+    const current = await start("/overlay", "overlay-keyboard", true);
+    await current.page.getByTestId("mergevow-checkpoint-trigger").focus();
+    await current.page.keyboard.press("Enter");
+    await current.page.getByTestId("mergevow-checkpoint-kind-text").focus();
+    await current.page.keyboard.press("Enter");
+    await current.page.getByTestId("mergevow-checkpoint-pick").focus();
+    await current.page.keyboard.press("Enter");
+    const target = current.page
+      .getByTestId("mergevow-checkpoint-target")
+      .filter({ hasText: "heading: Dashboard Ready" });
+    await target.focus();
+    await current.page.keyboard.press("Enter");
+
+    const confirm = current.page.getByTestId("mergevow-checkpoint-confirm");
+    const close = current.page.getByTestId("mergevow-checkpoint-close");
+    const hasFocus = (locator: PlaywrightLocator): Promise<boolean> =>
+      locator.evaluate((element) => {
+        const root = element.getRootNode();
+        return root instanceof ShadowRoot && root.activeElement === element;
+      });
+    await expect.poll(() => hasFocus(confirm)).toBe(true);
+    await current.page.keyboard.press("Tab");
+    await expect.poll(() => hasFocus(close)).toBe(true);
+    await current.page.keyboard.press("Shift+Tab");
+    await expect.poll(() => hasFocus(confirm)).toBe(true);
+    await current.page.keyboard.press("Enter");
+
+    await expect(current.stop()).resolves.toEqual({
+      contract: {
+        flow: "overlay-keyboard",
+        steps: [
+          { visit: "/overlay" },
+          {
+            assertText: {
+              equals: "Dashboard Ready",
+              locator: { name: "Dashboard Ready", role: "heading" },
+            },
+          },
+        ],
+        version: 1,
+      },
+      ok: true,
+    });
+  });
+
+  it("collapses picker UI so covered page targets remain selectable", async () => {
+    const current = await start("/overlay", "overlay-covered-target", true);
+    await openCheckpoint(current, "visible");
+    await current.page.getByTestId("mergevow-checkpoint-pick").click();
+    await expect
+      .poll(() => current.page.getByTestId("mergevow-checkpoint-panel").isHidden())
+      .toBe(true);
+    await expect
+      .poll(() => current.page.getByTestId("mergevow-checkpoint-picker-bar").isVisible())
+      .toBe(true);
+    await current.page.getByTestId("covered-action").click();
+    expect(
+      await current.page.evaluate(
+        () =>
+          (globalThis as typeof globalThis & { readonly coveredActionCount?: number })
+            .coveredActionCount ?? 0,
+      ),
+    ).toBe(0);
+    await current.page.getByTestId("mergevow-checkpoint-confirm").click();
+
+    await expect(current.stop()).resolves.toEqual({
+      contract: {
+        flow: "overlay-covered-target",
+        steps: [
+          { visit: "/overlay" },
+          { assertVisible: { name: "Covered target", role: "button" } },
+        ],
+        version: 1,
+      },
+      ok: true,
+    });
+  });
+
+  it("invalidates stale and newly ambiguous checkpoint targets before append", async () => {
+    const stale = await start("/overlay", "overlay-stale", true);
+    await openCheckpoint(stale, "visible");
+    await stale.page.getByTestId("mergevow-checkpoint-pick").click();
+    await stale.page.getByTestId("app-action").click();
+    await stale.page.getByTestId("app-action").evaluate((element) => element.remove());
+    await stale.page.getByTestId("mergevow-checkpoint-confirm").click();
+    await expect
+      .poll(() => stale.page.getByTestId("mergevow-checkpoint-status").textContent())
+      .toContain("not visible");
+    await stale.page.getByTestId("mergevow-checkpoint-cancel").click();
+    await expect(stale.stop()).resolves.toEqual({
+      contract: { flow: "overlay-stale", steps: [{ visit: "/overlay" }], version: 1 },
+      ok: true,
+    });
+    session = undefined;
+
+    const ambiguous = await start("/overlay", "overlay-new-ambiguity", true);
+    await openCheckpoint(ambiguous, "visible");
+    await ambiguous.page.getByTestId("mergevow-checkpoint-pick").click();
+    await ambiguous.page.getByRole("heading", { name: "Dashboard Ready" }).click();
+    await ambiguous.page.evaluate(() => {
+      const duplicate = document.createElement("h1");
+      duplicate.textContent = "Dashboard Ready";
+      document.body.append(duplicate);
+    });
+    await ambiguous.page.getByTestId("mergevow-checkpoint-confirm").click();
+    await expect
+      .poll(() => ambiguous.page.getByTestId("mergevow-checkpoint-status").textContent())
+      .toContain("target changed");
+    await ambiguous.page.getByTestId("mergevow-checkpoint-cancel").click();
+    await expect(ambiguous.stop()).resolves.toEqual({
+      contract: {
+        flow: "overlay-new-ambiguity",
+        steps: [{ visit: "/overlay" }],
+        version: 1,
+      },
+      ok: true,
+    });
+  });
+
+  it("invalidates a checkpoint whose locator or expected state changes before Add", async () => {
+    const current = await start("/overlay", "overlay-state-change", true);
+    await openCheckpoint(current, "text");
+    await current.page.getByTestId("mergevow-checkpoint-pick").click();
+    await current.page.getByRole("heading", { name: "Dashboard Ready" }).click();
+    await current.page.getByTestId("app-action").click();
+    await current.page.getByTestId("mergevow-checkpoint-confirm").click();
+    await expect
+      .poll(() => current.page.getByTestId("mergevow-checkpoint-status").textContent())
+      .toContain("target changed");
+    await current.page.getByTestId("mergevow-checkpoint-cancel").click();
+
+    await expect(current.stop()).resolves.toEqual({
+      contract: {
+        flow: "overlay-state-change",
+        steps: [{ visit: "/overlay" }, { click: { name: "Run action", role: "button" } }],
+        version: 1,
+      },
+      ok: true,
+    });
+  });
+
+  it("invalidates a count checkpoint when its live match count changes", async () => {
+    const current = await start("/overlay", "overlay-count-change", true);
+    await openCheckpoint(current, "count");
+    await current.page.getByTestId("mergevow-checkpoint-pick").click();
+    await current.page.getByRole("button", { name: "Entry" }).first().click();
+    await current.page.evaluate(() => {
+      const entry = document.createElement("button");
+      entry.textContent = "Entry";
+      document.querySelector('section[aria-label="Items"]')?.append(entry);
+    });
+    await current.page.getByTestId("mergevow-checkpoint-confirm").click();
+    await expect
+      .poll(() => current.page.getByTestId("mergevow-checkpoint-status").textContent())
+      .toContain("target changed");
+    await current.page.getByTestId("mergevow-checkpoint-cancel").click();
+
+    await expect(current.stop()).resolves.toEqual({
+      contract: { flow: "overlay-count-change", steps: [{ visit: "/overlay" }], version: 1 },
+      ok: true,
+    });
+  });
+
+  it("cancels a URL checkpoint when same-document navigation changes its snapshot", async () => {
+    const current = await start("/overlay", "overlay-url-navigation", true);
+    await openCheckpoint(current, "url");
+    await current.page.evaluate(() => {
+      location.hash = "changed";
+    });
+    await expect.poll(() => new URL(current.page.url()).hash).toBe("#changed");
+    await current.page.getByTestId("mergevow-checkpoint-confirm").click();
+    await expect
+      .poll(() => current.page.getByTestId("mergevow-checkpoint-status").textContent())
+      .toContain("URL changed");
+    await current.page.getByTestId("mergevow-checkpoint-cancel").click();
+
+    await expect(current.stop()).resolves.toEqual({
+      contract: {
+        flow: "overlay-url-navigation",
+        steps: [{ visit: "/overlay" }, { visit: "/overlay#changed" }],
+        version: 1,
+      },
+      ok: true,
+    });
+  });
+
+  it("reinjects the checkpoint overlay after same-origin navigation", async () => {
+    const current = await start("/overlay", "overlay-navigation", true);
+    await addUrlCheckpoint(current);
+    await openCheckpoint(current, "visible");
+    await current.page.getByTestId("mergevow-checkpoint-pick").click();
+    await current.page.goto("/next");
+    await current.page.getByTestId("mergevow-checkpoint-trigger").waitFor();
+    await addPickedCheckpoint(
+      current,
+      "visible",
+      current.page.getByRole("heading", { name: "Next" }),
+    );
+
+    const result = await current.stop();
+    expect(result).toMatchObject({
+      contract: {
+        steps: [
+          { visit: "/overlay" },
+          { assertUrl: "/overlay" },
+          { visit: "/next" },
+          { assertVisible: { name: "Next", role: "heading" } },
+        ],
+      },
+      ok: true,
+    });
+    if (!result.ok) throw new Error("Expected navigation checkpoint recording.");
+    await expect(replayContract(result.contract)).resolves.toMatchObject({
+      executionVerdict: EXECUTION_VERDICTS.pass,
+    });
+  });
+
+  it("keeps checkpoint locators stable across semantic wrapper refactors", async () => {
+    const current = await start("/semantic", "overlay-semantic", true);
+    await addPickedCheckpoint(current, "value", current.page.getByLabel("Project"));
+    await addPickedCheckpoint(
+      current,
+      "visible",
+      current.page.getByRole("button", { name: "Save" }),
+    );
+    const result = await current.stop();
+    expect(result).toMatchObject({
+      contract: {
+        steps: [
+          { visit: "/semantic" },
+          { assertValue: { equals: "", locator: { label: "Project" } } },
+          { assertVisible: { name: "Save", role: "button" } },
+        ],
+      },
+      ok: true,
+    });
+    if (!result.ok) throw new Error("Expected semantic checkpoint recording.");
+    session = undefined;
+    semanticRefactor = true;
+    await expect(replayContract(result.contract)).resolves.toMatchObject({
+      executionVerdict: EXECUTION_VERDICTS.pass,
+    });
+  });
+
+  it("keeps the checkpoint overlay opt-in and closes its owned page on stop", async () => {
+    const actionOnly = await start("/overlay", "overlay-disabled");
+    expect(await actionOnly.page.getByTestId("mergevow-checkpoint-trigger").count()).toBe(0);
+    await actionOnly.stop();
+    session = undefined;
+
+    const enabled = await start("/overlay", "overlay-enabled", true);
+    expect(await enabled.page.getByTestId("mergevow-checkpoint-trigger").count()).toBe(1);
+    const ownedPage = enabled.page;
+    await enabled.stop();
+    expect(ownedPage.isClosed()).toBe(true);
   });
 
   it("coalesces consecutive fills for the same control", async () => {
@@ -778,6 +1516,23 @@ describe("guarded Contract V1 action recorder", () => {
     });
   });
 
+  it("rejects password value checkpoints before reading or returning the value", async () => {
+    const current = await start("/password", "password-checkpoint", true);
+    await current.page.getByLabel("Password").evaluate((element) => {
+      if (!(element instanceof HTMLInputElement)) throw new TypeError("Missing password input.");
+      element.value = "overlay-password-secret";
+    });
+    await openCheckpoint(current, "value");
+    await current.page.getByTestId("mergevow-checkpoint-pick").click();
+    await current.page.getByLabel("Password").click();
+    const result = await current.stop();
+    expect(result).toMatchObject({
+      issue: { code: RECORDER_ISSUE_CODES.sensitiveControl },
+      ok: false,
+    });
+    expect(JSON.stringify(result)).not.toContain("overlay-password-secret");
+  });
+
   it("fails the whole recording on external traffic or short-lived popups", async () => {
     const externalSession = await start("/external", "external");
     external.requests.length = 0;
@@ -900,6 +1655,24 @@ describe("guarded Contract V1 action recorder", () => {
     expectExactFailure(await current.stop(), RECORDER_ISSUE_CODES.unsupportedLocator);
   });
 
+  it("bounds hidden checkpoint discovery without returning a partial assertion", async () => {
+    const current = await start("/many", "bounded-hidden-overlay", true);
+    await current.page.evaluate(() => {
+      const fragment = document.createDocumentFragment();
+      for (let index = 0; index < 2_500; index += 1) {
+        const button = document.createElement("button");
+        button.dataset.testid = "duplicate-hidden";
+        button.hidden = true;
+        button.textContent = `Hidden ${index}`;
+        fragment.append(button);
+      }
+      document.body.append(fragment);
+    });
+    await openCheckpoint(current, "hidden");
+    await current.page.getByTestId("mergevow-checkpoint-pick").click();
+    expectExactFailure(await current.stop(), RECORDER_ISSUE_CODES.unsupportedLocator);
+  });
+
   it("ignores synthetic page-script click, input, select, and check events", async () => {
     const current = await start("/form", "trusted-events-only");
     await current.page.evaluate(() => {
@@ -958,7 +1731,42 @@ describe("guarded Contract V1 action recorder", () => {
     expect(JSON.stringify(result)).not.toContain('"css"');
   });
 
+  it("rejects malformed checkpoint payloads without persisting executable locators", async () => {
+    const current = await start("/many", "malformed-checkpoint", true);
+    await current.page.evaluate(async () => {
+      const bindingName = Object.getOwnPropertyNames(globalThis).find((name) =>
+        name.startsWith("__mergevow_record_"),
+      );
+      if (bindingName === undefined) throw new TypeError("Missing recorder binding.");
+      const binding = (globalThis as Record<string, unknown>)[bindingName];
+      if (typeof binding !== "function") throw new TypeError("Invalid recorder binding.");
+      await binding({
+        assertionKind: "visible",
+        candidates: [{ locator: { css: "*" }, matches: 1 }],
+        documentToken: "forged",
+        kind: "assertion",
+        locator: { css: "*" },
+      });
+    });
+
+    const result = await current.stop();
+    expect(result).toMatchObject({
+      issue: { code: RECORDER_ISSUE_CODES.malformedEvent },
+      ok: false,
+    });
+    expect(JSON.stringify(result)).not.toContain('"css"');
+  });
+
   it("rejects invalid flow, external origin, and cross-origin start paths before capture", async () => {
+    await expect(
+      startActionRecorder({
+        browser,
+        checkpointOverlay: "yes" as never,
+        flow: "invalid-overlay-option",
+        origin: allowed.origin,
+        startPath: "/form",
+      }),
+    ).rejects.toThrow(/checkpoint-overlay option/i);
     await expect(
       startActionRecorder({
         browser,

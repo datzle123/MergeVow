@@ -19,12 +19,17 @@ import type { Request } from "playwright";
 
 import { parseBrowserRecorderEvent } from "./events.js";
 import type { RecorderDocumentState, RecorderInitScriptOptions } from "./instrumentation.js";
-import { selectCapturedLocator } from "./locator.js";
+import {
+  selectCapturedLocator,
+  selectExplicitCapturedLocator,
+  validateCapturedCount,
+} from "./locator.js";
 import {
   type ActionRecorderResult,
   type ActionRecorderSession,
   ActionRecorderStartError,
   type BrowserActionEvent,
+  type BrowserAssertionEvent,
   type BrowserNavigationEvent,
   type BrowserNavigationIntentEvent,
   type BrowserRejectedEvent,
@@ -131,9 +136,19 @@ function actionKey(documentToken: string, marker: string): string {
   return `${documentToken}\u0000${marker}`;
 }
 
+function locatorKey(locator: BrowserAssertionEvent["locator"]): string | undefined {
+  if (locator === undefined) return undefined;
+  if ("label" in locator) return `label:${locator.label}`;
+  if ("testId" in locator) return `testId:${locator.testId}`;
+  return `role:${locator.role}:${locator.name}`;
+}
+
 export async function startActionRecorder(
   options: StartActionRecorderOptions,
 ): Promise<ActionRecorderSession> {
+  if (options.checkpointOverlay !== undefined && typeof options.checkpointOverlay !== "boolean") {
+    throw new TypeError("The recorder checkpoint-overlay option must be boolean.");
+  }
   let origin: string;
   try {
     origin = normalizeLoopbackOrigin(options.origin);
@@ -175,13 +190,17 @@ export async function startActionRecorder(
     const initOptions: RecorderInitScriptOptions = Object.freeze({
       allowedRoles: ARIA_ROLES,
       bindingName,
+      checkpointOverlay: options.checkpointOverlay ?? false,
       markerAttribute,
       maxCandidates: RECORDER_LIMITS.maxCandidatesPerEvent,
       maxElements: RECORDER_LIMITS.maxElementsScanned,
       maxLocatorTextLength: CONTRACT_LIMITS.maxLocatorTextLength,
+      maxOverlayHiddenTargets: RECORDER_LIMITS.maxOverlayHiddenTargets,
       maxPendingEvents: RECORDER_LIMITS.maxPendingEvents,
       maxSemanticComputations: RECORDER_LIMITS.maxSemanticComputations,
+      maxUrlLength: CONTRACT_LIMITS.maxUrlLength,
       maxValueLength: CONTRACT_LIMITS.maxValueLength,
+      overlayHostId: `mergevow-checkpoint-${identifier}`,
       stateName,
     });
 
@@ -337,6 +356,102 @@ export async function startActionRecorder(
       }
     };
 
+    const malformedAssertion = (): void => {
+      setFatal(
+        issue(RECORDER_ISSUE_CODES.malformedEvent, "The checkpoint overlay sent invalid data."),
+      );
+    };
+
+    const handleAssertion = async (event: BrowserAssertionEvent): Promise<void> => {
+      if (event.assertionKind === "url") {
+        const path = event.path === undefined ? undefined : recordedPath(event.path);
+        if (event.origin !== origin || path === undefined) {
+          setFatal(
+            issue(
+              RECORDER_ISSUE_CODES.browserPolicy,
+              "The checkpoint URL left the exact recorder origin or was invalid.",
+            ),
+          );
+          return;
+        }
+        appendStep({ assertUrl: path });
+        return;
+      }
+
+      const selectedKey = locatorKey(event.locator);
+      const candidate = event.candidates?.find(
+        (entry) => locatorKey(entry.locator) === selectedKey,
+      );
+      if (selectedKey === undefined || candidate === undefined) {
+        malformedAssertion();
+        return;
+      }
+      if (event.assertionKind === "count") {
+        if (typeof event.expected !== "number" || event.expected !== candidate.matches) {
+          malformedAssertion();
+          return;
+        }
+        if (!(await validateCapturedCount(page, event, stateName))) {
+          setFatal(
+            issue(
+              RECORDER_ISSUE_CODES.unsupportedLocator,
+              "The selected count locator changed before the checkpoint was confirmed.",
+            ),
+          );
+          return;
+        }
+        appendStep({ assertCount: { equals: event.expected, locator: candidate.locator } });
+        return;
+      }
+
+      const selection = await selectExplicitCapturedLocator(
+        page,
+        event,
+        stateName,
+        event.assertionKind === "hidden",
+      );
+      if (!selection.ok) {
+        setFatal(
+          issue(
+            selection.ambiguous
+              ? RECORDER_ISSUE_CODES.ambiguousLocator
+              : RECORDER_ISSUE_CODES.unsupportedLocator,
+            selection.ambiguous
+              ? "The selected checkpoint locator is ambiguous."
+              : "The selected checkpoint has no supported semantic locator.",
+          ),
+        );
+        return;
+      }
+
+      switch (event.assertionKind) {
+        case "checked":
+          if (typeof event.expected !== "boolean") return malformedAssertion();
+          appendStep({ assertChecked: { equals: event.expected, locator: selection.locator } });
+          return;
+        case "disabled":
+          if (typeof event.expected !== "boolean") return malformedAssertion();
+          appendStep({ assertDisabled: { equals: event.expected, locator: selection.locator } });
+          return;
+        case "hidden":
+          appendStep({ assertHidden: selection.locator });
+          return;
+        case "text":
+          if (typeof event.expected !== "string") return malformedAssertion();
+          appendStep({ assertText: { equals: event.expected, locator: selection.locator } });
+          return;
+        case "value":
+          if (typeof event.expected !== "string") return malformedAssertion();
+          appendStep({ assertValue: { equals: event.expected, locator: selection.locator } });
+          return;
+        case "visible":
+          appendStep({ assertVisible: selection.locator });
+          return;
+        default:
+          malformedAssertion();
+      }
+    };
+
     const handleNavigationIntent = (event: BrowserNavigationIntentEvent): void => {
       const owner = actionKey(event.documentToken, event.ownerMarker);
       if (event.phase === "begin") {
@@ -402,6 +517,8 @@ export async function startActionRecorder(
         handleNavigation(event);
       } else if (event.kind === "navigationIntent") {
         handleNavigationIntent(event);
+      } else if (event.kind === "assertion") {
+        await handleAssertion(event);
       } else if ("candidates" in event) {
         await handleAction(event);
       } else {

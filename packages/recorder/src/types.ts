@@ -17,6 +17,33 @@ export const RECORDER_ISSUE_CODES = {
   valueLimit: "RECORDER_VALUE_LIMIT",
 } as const;
 
+const RECORDER_CHROMIUM_DISABLED_FEATURES: readonly string[] = Object.freeze([
+  "AvoidUnnecessaryBeforeUnloadCheckSync",
+  "BoundaryEventDispatchTracksNodeRemoval",
+  "DestroyProfileOnBrowserClose",
+  "DialMediaRouteProvider",
+  "GlobalMediaControls",
+  "HttpsUpgrades",
+  "LensOverlay",
+  "MediaRouter",
+  "PaintHolding",
+  "ThirdPartyStoragePartitioning",
+  "Translate",
+  "AutoDeElevate",
+  "RenderDocument",
+  "OptimizationHints",
+  "msForceBrowserSignIn",
+  "msEdgeUpdateLaunchServicesPreferredVersion",
+  "PreconnectToSearch",
+  "AimServerRequestOnStartupEnabled",
+  "AutofillServerCommunication",
+  "NetworkTimeServiceQuerying",
+]);
+
+export const RECORDER_CHROMIUM_LAUNCH_ARGS: readonly string[] = Object.freeze([
+  `--disable-features=${RECORDER_CHROMIUM_DISABLED_FEATURES.join(",")}`,
+]);
+
 export type RecorderIssueCode = (typeof RECORDER_ISSUE_CODES)[keyof typeof RECORDER_ISSUE_CODES];
 
 export const RECORDER_LIMITS = Object.freeze({
@@ -24,6 +51,7 @@ export const RECORDER_LIMITS = Object.freeze({
   maxElementsScanned: 10_000,
   maxIssueMessageLength: 4_096,
   maxMarkerLength: 128,
+  maxOverlayHiddenTargets: 32,
   maxPendingEvents: 128,
   maxSemanticComputations: 2_000,
 });
@@ -58,6 +86,7 @@ export type ActionRecorderResult = ActionRecorderSuccess | ActionRecorderFailure
 
 export interface StartActionRecorderOptions {
   readonly browser: Browser;
+  readonly checkpointOverlay?: boolean;
   readonly flow: string;
   readonly origin: string;
   readonly readiness?: LoopbackReadinessOptions;
@@ -71,6 +100,16 @@ export interface ActionRecorderSession {
 
 export type CapturedActionKind = "check" | "click" | "fill" | "select";
 
+export type CapturedAssertionKind =
+  | "checked"
+  | "count"
+  | "disabled"
+  | "hidden"
+  | "text"
+  | "url"
+  | "value"
+  | "visible";
+
 export interface BrowserLocatorCandidate {
   readonly locator: Locator;
   readonly matches: number;
@@ -83,6 +122,17 @@ export interface BrowserActionEvent {
   readonly marker: string;
   readonly mayNavigate?: boolean;
   readonly value?: string;
+}
+
+export interface BrowserAssertionEvent {
+  readonly assertionKind: CapturedAssertionKind;
+  readonly candidates?: readonly BrowserLocatorCandidate[];
+  readonly documentToken: string;
+  readonly expected?: boolean | number | string;
+  readonly kind: "assertion";
+  readonly locator?: Locator;
+  readonly origin?: string;
+  readonly path?: string;
 }
 
 export interface BrowserNavigationEvent {
@@ -114,6 +164,7 @@ export interface BrowserRejectedEvent {
 
 export type BrowserRecorderEvent =
   | BrowserActionEvent
+  | BrowserAssertionEvent
   | BrowserNavigationEvent
   | BrowserNavigationIntentEvent
   | BrowserRejectedEvent;

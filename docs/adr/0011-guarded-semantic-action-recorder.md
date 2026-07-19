@@ -32,9 +32,11 @@ selectors, scripts, or other executable contract data.
    and Playwright handles are not persisted.
    Clicks without native action semantics, an explicit role, test ID, or inline action marker are
    treated as non-actions; a custom control must expose role semantics or a test ID to be recordable.
-6. Password controls fail before their value is read. File input, uncheck, multi-value select,
-   unsupported input types, browser dialogs, frames, invalid/ambiguous locators, resource-limit
-   violations, guarded network failure, and any auxiliary page invalidate the whole recording.
+6. Direct password controls fail before candidate computation. Semantic-name paths that reach a
+   password control are omitted before accessible-name computation. File input, uncheck, multi-value
+   select, unsupported input types, browser dialogs, frames, invalid/ambiguous locators,
+   resource-limit violations, guarded network failure, and any auxiliary page invalidate the whole
+   recording.
 7. Current and historical page targets are checked with the SW-007A Chromium protocol barrier.
    Guarded policy and transport evidence takes precedence over page-event or locator errors.
 8. Browser event promises are capped at 128 and fill work is batched before Node's serialized queue;
@@ -54,8 +56,9 @@ selectors, scripts, or other executable contract data.
   that a page cannot forge events. Every result still passes the closed Contract V1 validator.
 - The standards-based accessible-name dependency is bundled into the published browser artifact and
   cross-checked against Playwright with navigation, mutation, shadow-root, and ambiguity cases.
-- Only pinned Chromium is supported. Additional pages, frames, production sessions, and auth remain
-  outside V0 recording.
+- Only pinned Chromium is supported. Browser-profile services outside the guarded context remain a
+  trusted-runner/process-network concern; additional pages, frames, production sessions, and auth
+  remain outside V0 recording.
 
 ## Guarantee Impact
 

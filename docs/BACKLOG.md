@@ -196,9 +196,10 @@ Password, file, uncheck, implicit/programmatic submit, unsupported input, invali
 resource, guard, frame, startup, and target failures expose one bounded issue and no partial
 contract. ADR-0011 records the cooperative authoring boundary.
 
-## Ready Issues
-
 ### SW-009: Checkpoint And Assertion Overlay
+
+**Status:** Complete on 2026-07-19. See
+[GitHub issue #19](https://github.com/datzle123/MergeVow/issues/19).
 
 **Objective:** Let a developer add meaningful Contract V1 assertions during a recording without
 editing JSON.
@@ -208,11 +209,28 @@ value, count, checked, and disabled checkpoints with exact semantic locators and
 overlay does not alter application behavior or create executable contract fields, and cancel/invalid
 selection never emits a partial assertion.
 
+**Outcome:** the recorder's opt-in open-Shadow-DOM tool surface authors all eight Contract V1
+assertions. Pointer selection consumes one owned gesture, hidden discovery and locator computation
+are bounded, count can intentionally retain a non-unique semantic locator, and confirmed checkpoints
+share the action queue. Cancel and invalid selection append nothing; malformed, resource, guard, and
+validation failures remain fail-closed. ADR-0012 records the Local Cooperative UI boundary.
+
+## Ready Issues
+
+### SW-010: Sensitive Input Redaction
+
+**Objective:** Apply explicit user-configured redaction to sensitive page-derived recorder data before
+it can enter a Contract V1 result.
+
+**Acceptance criteria:** bounded literal and pattern rules cover action values plus checkpoint URL,
+semantic-name, text, value, and test-ID data; password controls remain rejected before reading;
+redaction happens before validation/result exposure; invalid or over-broad configuration fails closed;
+tests prove deterministic output without claiming perfect secret detection.
+
 ## Planned Issues
 
 | ID | Deliverable | Depends on |
 |---|---|---|
-| SW-010 | Sensitive-input redaction | SW-008 |
 | SW-011 | Screenshot, console, and trace evidence | SW-005, SW-007 |
 | SW-012 | Semantic contract diff | SW-003 |
 | SW-013 | CLI `init`, `record`, `check`, `diff` | SW-009, SW-010, SW-011, SW-012 |

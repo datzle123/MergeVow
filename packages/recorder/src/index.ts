@@ -5,6 +5,7 @@ export {
   type ActionRecorderSession,
   ActionRecorderStartError,
   type ActionRecorderSuccess,
+  RECORDER_CHROMIUM_LAUNCH_ARGS,
   RECORDER_ISSUE_CODES,
   RECORDER_LIMITS,
   type RecorderIssue,

@@ -19,9 +19,9 @@ isolation or proof of human approval. See [docs/THREAT_MODEL.md](docs/THREAT_MOD
 
 ## Project Status
 
-**A guarded workspace recorder now captures the six Contract V1 actions as validated semantic data,
-and the persistence slice replays end to end in Chromium. This work is not published; checkpoint UI,
-configured redaction, the CLI, evidence, and PR Drift Gate have not shipped.**
+**A guarded workspace recorder now captures the six Contract V1 actions and all eight human-selected
+assertions as validated semantic data, and the persistence slice replays end to end in Chromium. This
+work is not published; configured redaction, the CLI, evidence, and PR Drift Gate have not shipped.**
 
 The repository contains the product charter, threat model, execution plan, validation kit, demo
 specifications, development toolchain, Codex skill, and four tested product packages:
@@ -51,6 +51,9 @@ The contract kernel already provides:
 - Guarded action capture for visit, click, fill, select, check, and reload with standards-based
   semantic-locator proofs, causal navigation, identity-based fill coalescing, fresh contexts, and no
   partial output on failure.
+- An opt-in Shadow DOM checkpoint surface for visible, hidden, URL, text, value, count, checked, and
+  disabled assertions with bounded hidden discovery, explicit semantic locator choice, source-order
+  interleaving, and no partial assertion on cancel or invalid selection.
 - Golden and boundary tests on Linux, Windows, and macOS through repository CI.
 
 Workspace API today (the packages are not published to npm yet):
@@ -81,8 +84,8 @@ Run the unreleased workspace proof with:
 pnpm --filter @mergevow/demo-todo-persistence demo
 ```
 
-Checkpoint selection, configured redaction, evidence, the CLI, and the PR Drift Gate remain on the
-public [issue roadmap](docs/BACKLOG.md); they are not advertised as shipped.
+Configured redaction, evidence, the CLI, and the PR Drift Gate remain on the public
+[issue roadmap](docs/BACKLOG.md); they are not advertised as shipped.
 
 ## For Contributors
 
@@ -90,8 +93,8 @@ public [issue roadmap](docs/BACKLOG.md); they are not advertised as shipped.
 2. Check [READY_TO_START.md](READY_TO_START.md).
 3. Read [AGENTS.md](AGENTS.md) before using a coding agent.
 4. Review [docs/BACKLOG.md](docs/BACKLOG.md).
-5. Continue with `SW-009`; action capture and the handwritten persistence slice must remain green as
-   checkpoint UI begins.
+5. Continue with `SW-010`; action/checkpoint capture and the handwritten persistence slice must
+   remain green as configured redaction begins.
 
 ## Setup
 
