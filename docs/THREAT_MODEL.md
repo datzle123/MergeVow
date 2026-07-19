@@ -59,8 +59,9 @@ inside the configured check.” Local mode is never described as tamper-proof.
 
 ## Availability
 
-- The repository contains a tested end-to-end Local Cooperative workspace demo. It has no published
-  package, recorder, or CLI yet.
+- The repository contains a tested end-to-end Local Cooperative workspace demo and an unreleased
+  workspace action recorder. It has no published package, checkpoint UI, configured redaction, or
+  CLI yet.
 - PR Drift Gate remains a V0 target and is not implemented.
 - Protected Attestation is post-V0 and must not be advertised as available before external
   enforcement, isolated execution, and bound-approval acceptance tests pass.
@@ -101,12 +102,18 @@ blocking and never become the active oracle automatically.
 - Contracts are versioned, data-only, size/depth bounded, and reject unknown fields.
 - Report fields are escaped before rendering. Evidence retention is bounded.
 - MergeVow does not intentionally serialize cookies, authorization headers, or browser storage
-  state; it rejects password-control capture and applies tested configured redaction before storage.
+  state. It rejects password-control capture; configured pre-persistence redaction remains an
+  `SW-010` requirement and is not advertised as available yet.
 - Network response bodies are excluded from evidence by default. Use synthetic test data and assume
   arbitrary page, URL, console, and screenshot content may still contain secrets.
 - Retry may classify `FLAKY`; it never converts failure into `PASS`.
 - Local replay uses a fresh guarded context, checks retained policy and transport failure before and
   after every browser operation, and never exports or reuses browser storage state.
+- Local recording uses a fresh guarded context and returns no partial contract after a fatal event.
+  It rejects password controls before reading their value. Contracts have no fields for cookies,
+  authorization headers, raw request/response bodies, local/session storage, or Playwright storage
+  state. The guarded driver still relays same-origin headers and bodies; URL, locator, and value text
+  derived from the page can contain sensitive data and remains subject to the SW-010 redaction work.
 
 ### PR Drift Gate
 

@@ -109,6 +109,33 @@ an infrastructure error, retained even if that page immediately closes. Assertio
 compared in full before result data is bounded: issue codes are limited to 128 characters, messages
 to 4,096 characters, and observed strings to 4,096 characters.
 
+## Recorder Action Capture
+
+The unreleased workspace recorder captures the six action opcodes from one fresh guarded Chromium
+context. Initial and direct navigation become `visit`; native link/submit clicks own their following
+navigation only when a matching main-frame request commits; reload remains explicit. Consecutive
+fills for the same document/element identity retain the first replayable locator and coalesce to the
+final bounded value.
+
+At each action, the bundled standards-based accessible-name implementation derives one computed
+role/name plus eligible label and exact test-ID candidates, then counts matches within bounded DOM
+and semantic-work budgets. The Node side performs a 250 ms opportunistic live Playwright recheck;
+the event-time proof remains authoritative when navigation or application mutation removes the
+target. Temporary marker attributes and browser handles are authoring internals and never enter the
+contract.
+
+Browser-side fill batching and a 128-event in-flight cap bound authoring backpressure. Implicit or
+programmatic form submission, stale click ownership, unsupported actions, and fatal guard/topology
+events fail closed. Startup rejects with one typed bounded issue; session shutdown returns either a
+complete deeply frozen value that passes this specification's validator or one issue with no partial
+contract.
+
+Recorder instrumentation is cooperative local authoring, not hostile-page isolation. Passwords are
+rejected before reading their value, and contracts have no fields for cookies, authorization
+headers, raw request/response bodies, local/session storage, or storage state. The guarded driver
+still relays same-origin headers and bodies; URL, locator, and value text derived from the page can
+contain sensitive data. Broader content redaction is specified separately in `SW-010`.
+
 ## Assertions
 
 | Opcode | Payload | Expected condition |

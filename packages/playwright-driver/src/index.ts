@@ -39,3 +39,8 @@ export {
   type LoopbackReadinessOptions,
   waitForLoopbackReady,
 } from "./readiness.js";
+export {
+  createPageTopologyObservation,
+  type PageTopologyObservation,
+  type PageTopologySnapshot,
+} from "./topology.js";

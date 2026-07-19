@@ -1,0 +1,40 @@
+{
+  "name": "@mergevow/recorder",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Guarded semantic action capture for MergeVow Contract V1.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "pnpm clean && tsc -b tsconfig.build.json && tsup --config tsup.browser.config.ts --silent",
+    "clean": "node -e \"const { rmSync } = require('node:fs'); rmSync('dist', { recursive: true, force: true }); rmSync('.tsbuildinfo', { force: true })\"",
+    "test": "pnpm build && vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@mergevow/contract": "workspace:*",
+    "@mergevow/playwright-driver": "workspace:*",
+    "dom-accessibility-api": "0.7.1",
+    "playwright": "1.61.1"
+  },
+  "devDependencies": {
+    "@mergevow/interpreter": "workspace:*",
+    "tsup": "8.5.1"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  }
+}

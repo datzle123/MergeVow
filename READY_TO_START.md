@@ -2,7 +2,8 @@
 
 MergeVow is in implementation. The contract kernel, strict semantic locator resolver,
 deterministic interpreter, guarded real-browser driver, readiness probe, and handwritten persistence
-vertical slice are built and tested. Recorder and CLI acquisition are not built yet.
+vertical slice are built and tested. Guarded recorder action capture is built; checkpoint UI and CLI
+acquisition are not built yet.
 
 ## Locked Decisions
 
@@ -43,6 +44,12 @@ vertical slice are built and tested. Recorder and CLI acquisition are not built 
 - Interpreter typecheck, clean build, package dry-run, and built-ESM state-machine smoke
 - `@mergevow/demo-todo-persistence`: 3 vertical-slice/report cases plus a runnable
   `PASS / PASS / REGRESSION` demo using fresh contexts
+- `@mergevow/recorder`: 31 real-Chromium cases covering all six actions, semantic refactors,
+  standards-based accessible names, shadow DOM, mutation-safe locator proof, identity-based fill
+  coalescing, causal navigation, GET/POST submit handling, record/replay, ambiguity,
+  sensitive/unsupported controls, typed startup, guard/topology/transport failure, resource bounds,
+  and fresh state isolation
+- Full pinned Chromium headed launch/capture smoke; CI retains the matching headless shell path
 - Source and built JSON Schema SHA-256 equality
 - Chromium launch and semantic heading lookup
 - All project-relative Markdown links
@@ -67,5 +74,5 @@ These require the owner's accounts or identity and were intentionally not guesse
 
 ## Next Action
 
-`SW-001` through `SW-007` are complete. Open `docs/BACKLOG.md` and start `SW-008` while keeping the
-handwritten vertical slice as the recorder's acceptance oracle.
+`SW-001` through `SW-008` are complete. Open `docs/BACKLOG.md` and start `SW-009` while keeping action
+capture and the handwritten vertical slice as acceptance oracles.

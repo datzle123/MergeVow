@@ -10,6 +10,6 @@ slice. Create remaining package manifests only when their owning issue starts.
 - `playwright-driver`: exact semantic resolution, cookie-isolated loopback request/API guard,
   readiness, all 14 Chromium operations, cancellation, and deterministic assertion mismatch data
   implemented; evidence capture follows in its owning issue.
-- `recorder`: headed action recorder and checkpoint overlay.
+- `recorder`: guarded action capture implemented in `SW-008`; checkpoint overlay follows in `SW-009`.
 - `reporter`: HTML, JSON, and Markdown evidence.
 - `cli`: `init`, `record`, `check`, and `diff`.

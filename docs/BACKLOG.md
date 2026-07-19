@@ -177,22 +177,41 @@ auxiliary pages without wall-clock settlement; repeated driver runs and three-pl
 creation events, and snapshots current targets before and after every operation. This removes the
 50 ms heuristic exposed by post-merge Windows CI while preserving truthful current/maximum evidence.
 
-## Ready Issues
-
 ### SW-008: Recorder Action Capture
+
+**Status:** Complete on 2026-07-19. See
+[GitHub issue #17](https://github.com/datzle123/MergeVow/issues/17).
 
 **Objective:** Capture the approved action subset from one headed Chromium page without creating an
 executable contract surface.
 
-**Acceptance criteria:** a user can capture visit, click, fill, select, and check actions as Contract
-V1 data; unsupported, sensitive, ambiguous, external, and multi-page activity fails closed or is
-explicitly excluded.
+**Acceptance criteria:** a user can capture visit, click, fill, select, check, and reload actions as
+Contract V1 data; unsupported, sensitive, ambiguous, external, framed, and multi-page activity fails
+closed with no partial contract.
+
+**Outcome:** `@mergevow/recorder` owns a fresh guarded context, captures bounded standards-based
+event-time semantic locator proofs, opportunistically rechecks live elements with Playwright,
+coalesces fills by element identity, and correlates click navigation through main-frame requests.
+Password, file, uncheck, implicit/programmatic submit, unsupported input, invalid/ambiguous locator,
+resource, guard, frame, startup, and target failures expose one bounded issue and no partial
+contract. ADR-0011 records the cooperative authoring boundary.
+
+## Ready Issues
+
+### SW-009: Checkpoint And Assertion Overlay
+
+**Objective:** Let a developer add meaningful Contract V1 assertions during a recording without
+editing JSON.
+
+**Acceptance criteria:** a headed Chromium overlay selects the approved visible, hidden, URL, text,
+value, count, checked, and disabled checkpoints with exact semantic locators and bounded values; the
+overlay does not alter application behavior or create executable contract fields, and cancel/invalid
+selection never emits a partial assertion.
 
 ## Planned Issues
 
 | ID | Deliverable | Depends on |
 |---|---|---|
-| SW-009 | Checkpoint/assertion overlay | SW-008 |
 | SW-010 | Sensitive-input redaction | SW-008 |
 | SW-011 | Screenshot, console, and trace evidence | SW-005, SW-007 |
 | SW-012 | Semantic contract diff | SW-003 |

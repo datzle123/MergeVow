@@ -42,7 +42,7 @@ jobs:
 
       - name: Install Chromium And Linux Dependencies
         if: runner.os == 'Linux'
-        run: pnpm browser:install
+        run: pnpm browser:install:ci
 
       - name: Install Chromium
         if: runner.os != 'Linux'

@@ -436,7 +436,7 @@ GitHub App or required workflow alone is not a sandbox.
 | SW-006B | Repository governance and security baseline **(complete)** | SW-006A |
 | SW-007 | Chromium driver, app readiness, and handwritten persistence vertical slice **(complete)** | SW-005, SW-006 |
 | SW-007A | Deterministic Chromium page-topology barrier **(complete)** | SW-007 |
-| SW-008 | Recorder action capture | SW-004, SW-007A |
+| SW-008 | Recorder action capture **(complete)** | SW-004, SW-007A |
 | SW-009 | Overlay for checkpoint/assertion selection | SW-008 |
 | SW-010 | Password, cookie, token, sensitive-input redaction | SW-008 |
 | SW-011 | Trace, screenshot, console, network-failure evidence | SW-005, SW-007 |

@@ -19,13 +19,14 @@ isolation or proof of human approval. See [docs/THREAT_MODEL.md](docs/THREAT_MOD
 
 ## Project Status
 
-**A handwritten contract now replays end to end in guarded Chromium: a semantic refactor passes and
-a broken persistence flow fails after reload. This workspace vertical slice is not published; the
-recorder, CLI, evidence, and PR Drift Gate have not shipped.**
+**A guarded workspace recorder now captures the six Contract V1 actions as validated semantic data,
+and the persistence slice replays end to end in Chromium. This work is not published; checkpoint UI,
+configured redaction, the CLI, evidence, and PR Drift Gate have not shipped.**
 
 The repository contains the product charter, threat model, execution plan, validation kit, demo
-specifications, development toolchain, Codex skill, and three tested product packages:
-`@mergevow/contract`, `@mergevow/playwright-driver`, and `@mergevow/interpreter`.
+specifications, development toolchain, Codex skill, and four tested product packages:
+`@mergevow/contract`, `@mergevow/playwright-driver`, `@mergevow/interpreter`, and
+`@mergevow/recorder`.
 
 Those are prospective workspace package identities. The `@mergevow` npm scope and `mergevow` CLI
 package are not reserved or published yet.
@@ -47,9 +48,12 @@ The contract kernel already provides:
   transport failures, and reject cross-origin requests plus unsupported realtime/worker APIs.
 - One seven-step todo contract that passes baseline and semantic-refactor variants, then reports
   `LOCATOR_MISSING` at step 6 when persistence is removed.
+- Guarded action capture for visit, click, fill, select, check, and reload with standards-based
+  semantic-locator proofs, causal navigation, identity-based fill coalescing, fresh contexts, and no
+  partial output on failure.
 - Golden and boundary tests on Linux, Windows, and macOS through repository CI.
 
-Workspace API today (the package is not published to npm yet):
+Workspace API today (the packages are not published to npm yet):
 
 ```ts
 import { hashContract, parseContract } from "@mergevow/contract";
@@ -77,8 +81,8 @@ Run the unreleased workspace proof with:
 pnpm --filter @mergevow/demo-todo-persistence demo
 ```
 
-Recording, evidence, the CLI, and the PR Drift Gate remain on the public
-[issue roadmap](docs/BACKLOG.md); they are not advertised as shipped.
+Checkpoint selection, configured redaction, evidence, the CLI, and the PR Drift Gate remain on the
+public [issue roadmap](docs/BACKLOG.md); they are not advertised as shipped.
 
 ## For Contributors
 
@@ -86,8 +90,8 @@ Recording, evidence, the CLI, and the PR Drift Gate remain on the public
 2. Check [READY_TO_START.md](READY_TO_START.md).
 3. Read [AGENTS.md](AGENTS.md) before using a coding agent.
 4. Review [docs/BACKLOG.md](docs/BACKLOG.md).
-5. Continue with `SW-008`; the handwritten Week 2 vertical slice must remain green as recorder work
-   begins.
+5. Continue with `SW-009`; action capture and the handwritten persistence slice must remain green as
+   checkpoint UI begins.
 
 ## Setup
 
@@ -98,7 +102,9 @@ pnpm browser:install
 pnpm check
 ```
 
-Node.js 24+ and pnpm 11 are the prepared baseline.
+Node.js 24+ and pnpm 11 are the prepared baseline. `pnpm browser:install` installs the full pinned
+Chromium build required for headed recorder authoring; repository CI installs the matching headless
+shell separately.
 
 ## V0 Boundary
 
